@@ -1,0 +1,13 @@
+{
+    "name": "app",
+    "main": "./resources/index.html",
+    "version": "0.0.1",
+    "window": {
+        "frame": true,
+        "width": 980,
+        "height": 600,
+        "show_in_taskbar": false,
+        "show": false
+    },
+    "node-remote": "<local>"
+}
