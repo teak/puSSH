@@ -18,8 +18,7 @@ var watch = require('watch');
 var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
 watch.createMonitor(desktopFolder, function (monitor) {
-    monitor.on("created", function (f, stat) {
-        var filePath = f;
+    monitor.on("created", function (filePath, stat) {
         var child = exec('mdls --raw --name kMDItemIsScreenCapture "'+filePath+'"', function (error, stdout, stderr) {
             if (stdout == '1') {
                 alert(filePath+' is a screenshot!');
