@@ -1,11 +1,11 @@
 {
-    "name": "app",
+    "name": "pussh",
     "main": "./resources/index.html",
     "version": "0.0.1",
     "window": {
         "frame": true,
-        "width": 980,
-        "height": 600,
+        "width": 400,
+        "height": 300,
         "show_in_taskbar": false,
         "show": false
     },
