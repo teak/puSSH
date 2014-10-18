@@ -92,6 +92,9 @@ Pussh.prototype.upload = function(file) {
 
     var selectedService = _self.settings.get('selectedService');
 
+    file = this.randomizeFilename(file);
+    file = this.prefixFilename(file);
+
     this.resize(file, function() {
         _self.services.get(selectedService).upload(file, function(url) {
             _self.trash(file);
@@ -125,6 +128,33 @@ Pussh.prototype.trash = function(file) {
 
     // We could just delete the file, but what if the user wants it back
     fs.rename(file, path.join(trashFolder, path.basename(file)));
+}
+
+Pussh.prototype.randomizeFilename = function(file) {
+    if(this.settings.get('randomizeFilenames') === false) return file;
+
+    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var newName = "";
+
+    for(var i=0; i < this.settings.get('randomizeFilenamesLength'); i++) {
+        newName += characters.charAt(Math.floor(Math.random()*characters.length));
+    }
+
+    newName += path.extname(file); // Append file extension
+
+    var newFile = path.join(path.dirname(file), newName);
+    fs.renameSync(file, newFile);
+    return newFile;
+}
+
+Pussh.prototype.prefixFilename = function(file) {
+    if(!this.settings.get('prefixFilenames').length) return file;
+
+    var newName = this.settings.get('prefixFilenames')+path.basename(file);
+
+    var newFile = path.join(path.dirname(file), newName);
+    fs.renameSync(file, newFile);
+    return newFile;
 }
 
 // Retina screens cause issues, so we give the option to resize

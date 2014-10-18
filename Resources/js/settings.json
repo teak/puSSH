@@ -3,5 +3,8 @@
 	"retinaResize": false,
 	"launchAtStartup": false,
 	"checkForUpdates": false,
-	"selectedService": "sftp"
+	"selectedService": "sftp",
+	"prefixFilenames": "",
+	"randomizeFilenames": true,
+	"randomizeFilenamesLength": 25
 }

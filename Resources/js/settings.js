@@ -12,6 +12,8 @@ Settings.prototype.parseType = function(value) {
         return true;
     } else if(value === "false") {
         return false;
+    } else if(!isNaN(value)) {
+        return value.indexOf('.') > -1 ? parseFloat(value) : parseInt(value);
     } else {
         return decodeURIComponent(value);
     }

@@ -100,7 +100,7 @@ Service.prototype.upload = function(file, callback) {
                     return;
                 }
 
-                var url = _self.getSetting('url')+encodeUriComponent(fileName);
+                var url = _self.getSetting('url')+encodeURIComponent(fileName);
 
                 callback(url);
             });
