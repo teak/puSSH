@@ -18,7 +18,7 @@ Settings.prototype.parseType = function(value) {
 }
 
 Settings.prototype.load = function() {
-    var settingsList = Object.keys(this.settings);
+    var settingsList = Object.keys(window.localStorage);
     var _self = this;
 
     settingsList.forEach(function(name) {

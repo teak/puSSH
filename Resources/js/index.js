@@ -59,6 +59,10 @@ Pussh.prototype.setupTray = function() {
     }));
 
     tray.menu = menu;
+
+    var nativeMenuBar = new gui.Menu({ type: "menubar" });
+    nativeMenuBar.createMacBuiltin("Pussh");
+    this.window.menu = nativeMenuBar;
 }
 
 // TODO: Watching for screenshots works on OSX, but what about Windows/*nix

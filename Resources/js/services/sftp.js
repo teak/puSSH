@@ -105,12 +105,16 @@ Service.prototype.upload = function(file, callback) {
                 callback(url);
             });
         });
+    }).on('error', function(e) {
+        window.alert(e);
+        conn.end();
     }).connect({
         host: this.getSetting('hostname'),
         port: this.getSetting('port'),
         username: this.getSetting('username'),
-        password: this.getPassword() || undefined,
-        privateKey: this.getSetting('private_key') || undefined
+        password: !this.getPassword('private_key') ? this.getPassword('password') : undefined,
+        passphrase: this.getPassword('private_key') ? this.getPassword('password') : undefined,
+        privateKey: this.getPassword('private_key') || undefined
     });
 }
 
@@ -127,6 +131,7 @@ Service.prototype.save = function(data) {
     });
 }
 
+// TODO: We should probably just extend these into each service, rather than defining them in each
 Service.prototype.getSetting = function(key) {
     return this._settings.get(this._name+'_'+key);
 }
@@ -135,12 +140,12 @@ Service.prototype.setSetting = function(key, value) {
     return this._settings.set(this._name+'_'+key, value);
 }
 
-Service.prototype.getPassword = function() {
-    return this._settings.getPassword(this._name);
+Service.prototype.getPassword = function(key) {
+    return this._settings.getPassword(this._name+'_'+key);
 }
 
-Service.prototype.setPassword = function(password) {
-    return this._settings.setPassword(this._name, password);
+Service.prototype.setPassword = function(key, password) {
+    return this._settings.setPassword(this._name+'_'+key, password);
 }
 
 module.exports = Service;
