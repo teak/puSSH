@@ -16,7 +16,6 @@ Services.prototype.load = function() {
         var module = require(path.join(__dirname, 'services', file));
 
         var initModule = new module(_self);
-        initModule._name = path.basename(file, '.js');
 
         _self._services[initModule._name] = initModule;
     });

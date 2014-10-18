@@ -56,7 +56,7 @@ Pussh.prototype.watch = function() {
             exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
                 if(error) return;
 
-                if(parseInt(stdout)) return; // 1 = screenshot, 0 = not a screenshot
+                if(!parseInt(stdout)) return; // 1 = screenshot, 0 = not a screenshot
 
                 _self.upload(file);
             });
