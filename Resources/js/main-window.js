@@ -17,7 +17,6 @@ app.run(function($rootScope) {
 
 // setup tray menu
 var tray = new gui.Tray({
-    title: 'pussh',
     icon: '../img/icon.png'
 });
 var menu = new gui.Menu();
