@@ -1,8 +1,5 @@
 'use strict';
 
-var Settings = require('./js/settings');
-var Services = require('./js/services');
-
 var app = angular.module('settingsWindow', ['schemaForm']);
 
 app.run(function($rootScope) {
