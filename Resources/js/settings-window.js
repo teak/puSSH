@@ -28,5 +28,4 @@ app.controller('settings', function($scope, $rootScope) {
     $scope.$watch('settings', function() {
         Pussh.settings.save();
     }, true);
-
 });

@@ -57,13 +57,36 @@
       <div class="tab-pane" id="uploads">
         <form class="form-horizontal" role="form">
           <div class="form-group">
-            <label class="col-sm-2 control-label">Upload Service</label>
-            <div class="col-sm-10">
+            <label class="col-sm-3 control-label">Upload Service</label>
+            <div class="col-sm-9">
               <select class="form-control" ng-options="service.name for service in services track by service._name" ng-model="selectedService"></select>
             </div>
           </div>
+          <hr>
           <div class="form-group">
-            <div class="col-sm-10">
+            <label class="col-sm-3 control-label">Filename Prefix</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" ng-model="settings.prefixFilenames">
+            </div>
+          </div>
+          <hr>
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="settings.randomizeFilenames"> Randomize Filename
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" ng-show="settings.randomizeFilenames === true">
+            <div class="col-sm-offset-3 col-sm-2">
+              <input type="number" class="form-control" ng-model="settings.randomizeFilenamesLength" placeholder="Length">
+            </div>
+          </div>
+          <hr>
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
               <div class="checkbox">
                 <label>
                   <input type="checkbox" ng-model="settings.retinaResize"> Automatically Scale High DPI Screenshots
@@ -71,8 +94,9 @@
               </div>
             </div>
           </div>
+          <hr>
           <div class="form-group">
-            <div class="col-sm-10">
+            <div class="col-sm-offset-3 col-sm-9">
               <div class="checkbox">
                 <label>
                   <input type="checkbox" ng-model="settings.sendToTrash"> Move to Trash After Upload
