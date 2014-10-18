@@ -19,17 +19,14 @@ app.controller('settings', function($scope, $rootScope) {
 
     $scope.$watch('selectedService', function(value) {
         $scope.settings.selectedService = value._name;
+
+        $scope.selectedServiceSchema = Pussh.services._services[value._name].schema;
+        $scope.selectedServiceForm = Pussh.services._services[value._name].form;
+        $scope.selectedServiceModel = {};
     });
 
     $scope.$watch('settings', function() {
         Pussh.settings.save();
     }, true);
-
-    // test
-    $scope.selectedServiceSchema = Pussh.services._services.sftp.schema;
-
-    $scope.selectedServiceForm = Pussh.services._services.sftp.form;
-
-    $scope.selectedServiceModel = {};
 
 });
