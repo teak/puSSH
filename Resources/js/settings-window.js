@@ -1,10 +1,14 @@
 'use strict';
 
-var app = angular.module('settingsWindow', []);
+var Settings = require('./js/settings');
+var Services = require('./js/services');
+
+var app = angular.module('settingsWindow', ['schemaForm']);
 
 app.run(function($rootScope) {
     $rootScope.GUI = require('nw.gui');
     $rootScope.AppName = $rootScope.GUI.App.manifest.name;
+    $rootScope.Version = $rootScope.GUI.App.manifest.version;
     $rootScope.Window = $rootScope.GUI.Window.get();
     $rootScope.Pussh = global.Pussh;
 });

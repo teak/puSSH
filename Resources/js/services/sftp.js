@@ -23,46 +23,46 @@ function Service(main) {
     ];
 
     this.schema = {
-        type: "object",
-        title: "SFTP",
-        properties: {
-            hostname: {
-                title: 'Hostname',
-                type: 'text',
-                description: 'The hostname or IP of the server',
+        "type": "object",
+        "title": "SFTP",
+        "properties": {
+            "hostname": {
+                "title": 'Hostname',
+                "type": 'string',
+                "description": 'The hostname or IP of the server'
             },
-            port: {
-                title: 'Port',
-                type: 'text',
-                description: 'The port on the server to connect to',
+            "port": {
+                "title": 'Port',
+                "type": 'string',
+                "description": 'The port on the server to connect to'
             },
-            path: {
-                title: 'Path',
-                type: 'text',
-                description: 'The path to the directory to store screenshots',
+            "path": {
+                "title": 'Path',
+                "type": 'string',
+                "description": 'The path to the directory to store screenshots'
             },
-            username: {
-                title: 'Username',
-                type: 'text',
-                description: 'The username you wish to authenticate as',
+            "username": {
+                "title": 'Username',
+                "type": 'string',
+                "description": 'The username you wish to authenticate as'
             },
-            password: {
-                title: 'Password',
-                type: 'password',
-                description: 'The password to login with',
+            "password": {
+                "title": 'Password',
+                "type": 'string',
+                "description": 'The password to login with'
             },
-            private_key: {
-                title: 'Private Key',
-                type: 'file',
-                description: '(optional) The SSH Keyfile to login with',
+            "private_key": {
+                "title": 'Private Key',
+                "type": 'string',
+                "description": '(optional) The SSH Keyfile to login with'
             },
-            url: {
-                title: 'URL',
-                type: 'text',
-                description: 'The URL to the directory holding screenshots',
+            "url": {
+                "title": 'URL',
+                "type": 'string',
+                "description": 'The URL to the directory holding screenshots'
             }
         },
-        required: [
+        "required": [
             'hostname',
             'port',
             'path',
