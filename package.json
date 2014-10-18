@@ -6,6 +6,7 @@
         "frame": true,
         "width": 400,
         "height": 300,
+        "focus": true,
         "show_in_taskbar": false,
         "show": false
     },

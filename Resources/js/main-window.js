@@ -21,17 +21,44 @@ var tray = new gui.Tray({
     icon: '../img/icon.png'
 });
 var menu = new gui.Menu();
+var item;
 
-var item = new gui.MenuItem({
+// open settings
+item = new gui.MenuItem({
+    label: 'Settings',
+    click: function() {
+        Window.show();
+        Window.focus();
+    }
+});
+menu.append(item);
+
+// quit app
+item = new gui.MenuItem({
     label: 'Quit ' + AppName,
     click: function() {
         gui.App.quit();
     }
 });
-
 menu.append(item);
+
 tray.menu = menu;
 
+
+// manage window
+Window.on('close', function () {
+    this.hide();
+});
+
+
+// check password
+var keychain = require('keychain');
+
+keychain.getPassword({ account: localStorage.accountName, service: 'puushApp' }, function(err, pass) {
+    if (err) {
+        Window.show();
+    }
+});
 
 
 var sys = require('sys');
