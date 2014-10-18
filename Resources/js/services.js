@@ -24,8 +24,9 @@ Services.prototype.load = function() {
 Services.prototype.list = function() {
     var list = [];
 
+    var _self = this;
     Object.keys(this._services).forEach(function(service) {
-        list.push(service);
+        list.push(_self._services[service]);
     });
 
     return list;
