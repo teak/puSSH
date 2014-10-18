@@ -155,6 +155,8 @@ Pussh.prototype.resize = function(file, callback) {
 Pussh.prototype.copyToClipboard = function(url) {
     var clipboard = gui.Clipboard.get();
 
+    url = encodeUri(url);
+
     clipboard.set(url);
 }
 
