@@ -28,8 +28,17 @@ Settings.prototype.load = function() {
     });
 }
 
+Settings.prototype.save = function() {
+    var settingsList = Object.keys(this.settings);
+    var _self = this;
+
+    settingsList.forEach(function(name) {
+        _self.set(name, _self.settings[name]);
+    });
+}
+
 Settings.prototype.get = function(name) {
-    return this.settings[name];
+    return name ? this.settings[name] : this.settings;
 }
 
 Settings.prototype.set = function(name, value) {

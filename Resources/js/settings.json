@@ -1,4 +1,7 @@
 {
 	"sendToTrash": false,
-	"retinaResize": false
+	"retinaResize": false,
+	"launchAtStartup": false,
+	"checkForUpdates": false,
+	"selectedService": "sftp"
 }

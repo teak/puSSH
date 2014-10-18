@@ -8,6 +8,11 @@ var watch = require('watch');
 var Settings = require('./js/settings');
 var Services = require('./js/services');
 
+process.on('uncaughtException', function(err) {
+  console.log('Caught exception: ', err);
+  window.alert('There was an uncaught exception.');
+});
+
 function Pussh() {
     this.settings = new Settings();
     this.version = gui.App.manifest.version;
@@ -69,6 +74,7 @@ Pussh.prototype.watch = function() {
 
                 if(!parseInt(stdout)) return; // 1 = screenshot, 0 = not a screenshot
 
+                console.log('Uploading %s', file);
                 _self.upload(file);
             });
         });
@@ -80,9 +86,10 @@ Pussh.prototype.watch = function() {
 Pussh.prototype.upload = function(file) {
     var _self = this;
 
-    var selectedAuth = _self.settings.get('authModule');
+    var selectedService = _self.settings.get('selectedService');
+
     this.resize(file, function() {
-        _self._authModules[selectedAuth].upload(file, function(url) {
+        _self.services.get(selectedService).upload(file, function(url) {
             _self.trash(file);
             _self.copyToClipboard(url);
             // TODO: Completion sound
@@ -127,8 +134,8 @@ Pussh.prototype.resize = function(file, callback) {
 
         var lines = stdout.split('\n');
 
-        var dpiWidth = parseFloat(lines[0].split(':')[1].trim());
-        var pixelWidth = parseInt(lines[1].split(':')[1].trim());
+        var dpiWidth = parseFloat(lines[1].split(':')[1].trim());
+        var pixelWidth = parseInt(lines[2].split(':')[1].trim());
 
         if(parseInt(dpiWidth) === 72) return callback();
 
@@ -147,4 +154,4 @@ Pussh.prototype.copyToClipboard = function(url) {
     clipboard.set(url);
 }
 
-window.Pussh = new Pussh();
+global.Pussh = new Pussh();

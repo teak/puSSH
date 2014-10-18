@@ -13,11 +13,11 @@ function Service(main) {
         'username',
         {
             key: 'password',
-            type: 'passowrd'
+            type: 'password'
         },
         {
             key: 'private_key',
-            type: 'passowrd'
+            type: 'password'
         },
         'url'
     ];
@@ -77,7 +77,12 @@ function Service(main) {
 Service.prototype.upload = function(file, callback) {
     var _self = this;
 
-    var conn = new Connection();
+    if(!this.getSetting('hostname')) return window.alert('No hostname configured for upload');
+    if(!this.getSetting('port')) return window.alert('No port configured for upload');
+    if(!this.getSetting('username')) return window.alert('No username configured for upload');
+    if(!this.getSetting('url')) return window.alert('No url configured for upload');
+
+    var conn = new ssh();
     conn.on('ready', function() {
         conn.sftp(function(err, sftp) {
             if(err) {

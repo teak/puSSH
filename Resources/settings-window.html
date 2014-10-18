@@ -1,31 +1,86 @@
 <!DOCTYPE html>
 <html ng-app="settingsWindow">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <title ng-bind="AppName"></title>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title ng-bind="AppName"></title>
 
-        <link rel="stylesheet" href="lib-css/bootstrap.min.css">
-        <link rel="stylesheet" href="lib-css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="css/fonts.css">
-        <link rel="stylesheet" href="css/main-window.css">
+    <link rel="stylesheet" href="lib-css/bootstrap.min.css">
+    <link rel="stylesheet" href="lib-css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/main-window.css">
 
-        <script src="lib/jquery.min.js"></script>
-        <script src="lib/bootstrap.min.js"></script>
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
 
-        <script src="lib/angular.min.js"></script>
+    <script src="lib/angular.min.js"></script>
 
-        <!-- angular-schema-form -->
-        <script src="lib/tv4.js"></script>
-        <script src="lib/ObjectPath.js"></script>
-        <script src="lib/schema-form.min.js"></script>
-        <script src="lib/bootstrap-decorator.min.js"></script>
+    <!-- angular-schema-form -->
+    <script src="lib/tv4.js"></script>
+    <script src="lib/ObjectPath.js"></script>
+    <script src="lib/schema-form.min.js"></script>
+    <script src="lib/bootstrap-decorator.min.js"></script>
 
-        <script src="js/settings-window.js"></script>
-    </head>
-    <body>
-        {{AppName}}
-    </body>
+    <script src="js/settings-window.js"></script>
+  </head>
+  <body ng-controller="settings">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="active"><a href="#general" role="tab" data-toggle="tab">General</a></li>
+      <li><a href="#uploads" role="tab" data-toggle="tab">Uploads</a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active" id="general">
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <div class="col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="settings.launchAtStartup"> Launch at Startup
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="settings.checkForUpdates"> Check for Updates
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="tab-pane" id="uploads">
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Upload Service</label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-options="service.name for service in services track by service._name" ng-model="selectedService"></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="settings.retinaResize"> Automatically Scale High DPI Screenshots
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="settings.sendToTrash"> Move to Trash After Upload
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
 </html>
