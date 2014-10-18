@@ -117,19 +117,19 @@ Service.prototype.save = function(data) {
 }
 
 Service.prototype.getSetting = function(key) {
-    return this._settings.get(_self._name+'_'+key);
+    return this._settings.get(this._name+'_'+key);
 }
 
 Service.prototype.setSetting = function(key, value) {
-    return this._settings.set(_self._name+'_'+key, value);
+    return this._settings.set(this._name+'_'+key, value);
 }
 
 Service.prototype.getPassword = function() {
-    return this._settings.getPassword(_self._name);
+    return this._settings.getPassword(this._name);
 }
 
 Service.prototype.setPassword = function(password) {
-    return this._settings.setPassword(_self._name, password);
+    return this._settings.setPassword(this._name, password);
 }
 
 module.exports = Service;
