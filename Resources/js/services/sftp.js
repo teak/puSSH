@@ -7,63 +7,69 @@ function Service(main) {
     this.description = "Upload screenshots to a server via SFTP";
 
     this.settings = [
+        'hostname',
+        'port',
+        'path',
+        'username',
         {
-            name: 'Hostname',
-            key: 'hostname',
-            type: 'text',
-            default: '',
-            helpText: 'The hostname or IP of the server',
-            required: true
-        },
-        {
-            name: 'Port',
-            key: 'port',
-            type: 'text',
-            default: 22,
-            helpText: 'The port on the server to connect to',
-            required: true
-        },
-        {
-            name: 'Path',
-            key: 'path',
-            type: 'text',
-            default: '',
-            helpText: 'The path to the directory to store screenshots',
-            required: true
-        },
-        {
-            name: 'Username',
-            key: 'username',
-            type: 'text',
-            default: '',
-            helpText: 'The username you wish to authenticate as',
-            required: true
-        },
-        {
-            name: 'Password',
             key: 'password',
-            type: 'password',
-            default: '',
-            helpText: 'The password to login with',
-            required: false
+            type: 'passowrd'
         },
         {
-            name: 'Private Key',
             key: 'private_key',
-            type: 'file',
-            default: '',
-            helpText: '(optional) The SSH Keyfile to login with',
-            required: false
+            type: 'passowrd'
         },
-        {
-            name: 'URL',
-            key: 'url',
-            type: 'text',
-            default: '',
-            helpText: 'The URL to the directory holding screenshots',
-            required: true
-        }
+        'url'
     ];
+
+    this.schema = {
+        type: "object",
+        title: "SFTP",
+        properties: {
+            hostname: {
+                title: 'Hostname',
+                type: 'text',
+                description: 'The hostname or IP of the server',
+            },
+            port: {
+                title: 'Port',
+                type: 'text',
+                description: 'The port on the server to connect to',
+            },
+            path: {
+                title: 'Path',
+                type: 'text',
+                description: 'The path to the directory to store screenshots',
+            },
+            username: {
+                title: 'Username',
+                type: 'text',
+                description: 'The username you wish to authenticate as',
+            },
+            password: {
+                title: 'Password',
+                type: 'password',
+                description: 'The password to login with',
+            },
+            private_key: {
+                title: 'Private Key',
+                type: 'file',
+                description: '(optional) The SSH Keyfile to login with',
+            },
+            url: {
+                title: 'URL',
+                type: 'text',
+                description: 'The URL to the directory holding screenshots',
+            }
+        },
+        required: [
+            'hostname',
+            'port',
+            'path',
+            'username',
+            'url'
+        ]
+    };
 
     this._settings = main.settings;
 }

@@ -10,7 +10,8 @@ var Services = require('./js/services');
 
 function Pussh() {
     this.settings = new Settings();
-    this.version = require('../package.json').version;
+    this.version = gui.App.manifest.version;
+    this.window = gui.Window.get();
 
     this.services = new Services(this);
 
@@ -19,7 +20,10 @@ function Pussh() {
 }
 
 Pussh.prototype.setupTray = function() {
+    var _self = this;
+
     var tray = new gui.Tray({
+        title: 'pussh',
         icon: '../img/icon.png'
     });
 
@@ -29,9 +33,15 @@ Pussh.prototype.setupTray = function() {
     menu.append(new gui.MenuItem({
         label: 'Settings',
         click: function() {
-            //Window.show();
-            //Window.focus();
-            // TODO: make a new window popup that references this Pussh object
+            var settingsWindow = gui.Window.open('settings-window.html', {
+                "focus": true,
+                "toolbar": true,
+                "width": 800,
+                "height": 600
+            });
+            // window.location = 'settings-window.html';
+            // _self.window.show();
+            // _self.window.focus();
         }
     }));
 
@@ -48,9 +58,10 @@ Pussh.prototype.setupTray = function() {
 
 // TODO: Watching for screenshots works on OSX, but what about Windows/*nix
 Pussh.prototype.watch = function() {
-    var desktopFolder = path.join(process.env['HOME'], 'Desktop');
-
     var _self = this;
+
+    var desktopFolder = path.join(process.env['HOME'], 'Desktop');
+    
     watch.createMonitor(desktopFolder, function(monitor) {
         monitor.on("created", function(file) {
             exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
@@ -67,9 +78,9 @@ Pussh.prototype.watch = function() {
 // Uploads a new file
 // TODO: Tray icon status change to uploading
 Pussh.prototype.upload = function(file) {
-    var selectedAuth = _self.settings.get('authModule');
-
     var _self = this;
+
+    var selectedAuth = _self.settings.get('authModule');
     this.resize(file, function() {
         _self._authModules[selectedAuth].upload(file, function(url) {
             _self.trash(file);
@@ -81,6 +92,8 @@ Pussh.prototype.upload = function(file) {
 
 // Trash file after upload
 Pussh.prototype.trash = function(file) {
+    var _self = this;
+
     if(_self.settings.get('sendToTrash') === false) return;
 
     var trashFolder;
@@ -105,6 +118,8 @@ Pussh.prototype.trash = function(file) {
 
 // Retina screens cause issues, so we give the option to resize
 Pussh.prototype.resize = function(file, callback) {
+    var _self = this;
+
     if(os.platform() !== 'darwin' || _self.settings.get('retinaResize') === false) return callback();
 
     exec('/usr/bin/sips -g dpiWidth -g pixelWidth "'+file+'"', function(error, stdout) {
