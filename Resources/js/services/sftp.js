@@ -6,7 +6,7 @@ function Service(main) {
     this.name = "SFTP";
     this.description = "Upload screenshots to a server via SFTP";
 
-    this.settings = [
+    this.form = [
         'hostname',
         'port',
         'path',
@@ -15,10 +15,7 @@ function Service(main) {
             key: 'password',
             type: 'password'
         },
-        {
-            key: 'private_key',
-            type: 'password'
-        },
+        'private_key',
         'url'
     ];
 
