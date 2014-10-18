@@ -13,6 +13,7 @@
   "node-remote": "<local>",
   "dependencies": {
     "keytar": "^2.0.3",
+    "node-notifier": "^4.0.2",
     "nw-gyp": "^0.12.2",
     "ssh2": "^0.3.6",
     "watch": "^0.11.0"

@@ -1,6 +1,7 @@
 var exec = require('child_process').exec;
 var fs = require('fs');
 var gui = require('nw.gui');
+var notifier = require('node-notifier');
 var os = require('os');
 var path = require('path');
 var watch = require('watch');
@@ -95,11 +96,26 @@ Pussh.prototype.upload = function(file) {
     file = this.randomizeFilename(file);
     file = this.prefixFilename(file);
 
+    notifier.notify({
+        title: 'Pussh',
+        message: 'Pussh has initiated a screenshot upload.',
+        icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon@2x.png') : undefined,
+        sender: 'com.intel.nw'
+    });
+
     this.resize(file, function() {
         _self.services.get(selectedService).upload(file, function(url) {
             _self.trash(file);
             _self.copyToClipboard(url);
             // TODO: Completion sound
+
+            notifier.notify({
+                title: 'Pussh',
+                message: 'The screenshot URL has been copied to your clipboard.',
+                icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon@2x.png') : undefined,
+                sound: true,
+                sender: 'com.intel.nw'
+            });
         });
     });
 }
