@@ -72,7 +72,7 @@ Pussh.prototype.watch = function() {
 
     var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
-    var watcher = chokidar.watch(desktopFolder, {ignored: /[\/\\]\./, persistent: true});
+    var watcher = chokidar.watch(desktopFolder, {ignored: /[\/\\]\./, persistent: true, ignoreInitial: true});
 
     watcher.on('add', function(file) {
         exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
