@@ -1,10 +1,10 @@
+var chokidar = require('chokidar');
 var exec = require('child_process').exec;
 var fs = require('fs');
 var gui = require('nw.gui');
 var notifier = require('node-notifier');
 var os = require('os');
 var path = require('path');
-var watch = require('watch');
 
 var Settings = require('./js/settings');
 var Services = require('./js/services');
@@ -71,17 +71,17 @@ Pussh.prototype.watch = function() {
     var _self = this;
 
     var desktopFolder = path.join(process.env['HOME'], 'Desktop');
-    
-    watch.createMonitor(desktopFolder, function(monitor) {
-        monitor.on("created", function(file) {
-            exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
-                if(error) return;
 
-                if(!parseInt(stdout)) return; // 1 = screenshot, 0 = not a screenshot
+    var watcher = chokidar.watch(desktopFolder, {ignored: /[\/\\]\./, persistent: true});
 
-                console.log('Uploading %s', file);
-                _self.upload(file);
-            });
+    watcher.on('add', function(file) {
+        exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
+            if(error) return;
+
+            if(!parseInt(stdout)) return; // 1 = screenshot, 0 = not a screenshot
+
+            console.log('Uploading %s', file);
+            _self.upload(file);
         });
     });
 }
