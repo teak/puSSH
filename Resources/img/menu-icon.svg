@@ -14,7 +14,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="New document 1">
+   sodipodi:docname="menu-icon.svg"
+   inkscape:export-filename="/Users/teak/Documents/Github/pussh/Resources/img/menu-alt-icon@2x.png"
+   inkscape:export-xdpi="47.8125"
+   inkscape:export-ydpi="47.8125">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -25,17 +28,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.984375"
-     inkscape:cx="31.874755"
+     inkscape:cx="9.4559683"
      inkscape:cy="32"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1051"
-     inkscape:window-height="791"
-     inkscape:window-x="1594"
-     inkscape:window-y="136"
+     inkscape:window-width="1585"
+     inkscape:window-height="799"
+     inkscape:window-x="1339"
+     inkscape:window-y="107"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
@@ -55,8 +58,8 @@
      id="layer1"
      transform="translate(0,-988.36218)">
     <path
-       style="fill:none;stroke:#000000;stroke-width:3.21;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 32.259428,1040.1477 25.669236,1018.1466 11.677752,1016.2202 33.881629,1000.201 51.32029,1015.3077 38.342682,1018.5521 z"
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.99714803999999990;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 33.322606,1042.7911 25.116384,1015.3949 7.693943,1012.9961 35.342599,993.04879 57.057525,1011.8599 40.89758,1015.8999 z"
        id="path2985"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccccc" />
