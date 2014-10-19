@@ -31,8 +31,8 @@ Pussh.prototype.setupTray = function() {
     var _self = this;
 
     var tray = new gui.Tray({
-        title: 'pussh',
-        icon: '../img/menu-icon@2x.png'
+        icon: path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png'),
+        alticon: path.join(process.cwd(), 'Resources', 'img', 'menu-alt-icon@2x.png')
     });
 
     var menu = new gui.Menu();
@@ -55,7 +55,7 @@ Pussh.prototype.setupTray = function() {
 
     // quit app
     menu.append(new gui.MenuItem({
-        label: 'Quit Pussh',
+        label: 'Quit '+this.name,
         click: function() {
             gui.App.quit();
         }
@@ -64,7 +64,7 @@ Pussh.prototype.setupTray = function() {
     tray.menu = menu;
 
     var nativeMenuBar = new gui.Menu({ type: "menubar" });
-    nativeMenuBar.createMacBuiltin("Pussh");
+    nativeMenuBar.createMacBuiltin(this.name);
     this.window.menu = nativeMenuBar;
 }
 
