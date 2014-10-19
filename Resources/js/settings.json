@@ -6,5 +6,8 @@
 	"selectedService": "sftp",
 	"prefixFilenames": "",
 	"randomizeFilenames": true,
-	"randomizeFilenamesLength": 25
+	"randomizeFilenamesLength": 25,
+	"openBrowser": false,
+	"enableNotifications": true,
+	"audioNotifications": true
 }

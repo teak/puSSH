@@ -19,23 +19,38 @@ function Pussh() {
     this.name = gui.App.manifest.name;
     this.version = gui.App.manifest.version;
     this.window = gui.Window.get();
+    this.tink = new Audio('aud/ts-tink.ogg');
 
     this.services = new Services(this);
 
     this.watch();
     this.launchAtStartup();
     this.setupTray();
+    this.buildTrayMenu(false);
 }
 
 Pussh.prototype.setupTray = function() {
-    var _self = this;
-
-    var tray = new gui.Tray({
+    // create status item
+    this.tray = new gui.Tray({
         icon: path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png'),
         alticon: path.join(process.cwd(), 'Resources', 'img', 'menu-alt-icon@2x.png')
     });
+}
+
+Pussh.prototype.buildTrayMenu = function(lastURL) {
+    var _self = this;
 
     var menu = new gui.Menu();
+
+    // add the last url
+    if (lastURL) {
+        menu.append(new gui.MenuItem({
+            label: lastURL,
+            click: function() {
+                _self.copyToClipboard(lastURL);
+            }
+        }));
+    }
 
     // open settings
     menu.append(new gui.MenuItem({
@@ -47,9 +62,6 @@ Pussh.prototype.setupTray = function() {
                 "width": 800,
                 "height": 600
             });
-            // window.location = 'settings-window.html';
-            // _self.window.show();
-            // _self.window.focus();
         }
     }));
 
@@ -61,7 +73,7 @@ Pussh.prototype.setupTray = function() {
         }
     }));
 
-    tray.menu = menu;
+    _self.tray.menu = menu;
 
     var nativeMenuBar = new gui.Menu({ type: "menubar" });
     nativeMenuBar.createMacBuiltin(this.name);
@@ -74,7 +86,7 @@ Pussh.prototype.watch = function() {
 
     var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
-    var watcher = chokidar.watch(desktopFolder, {ignored: /[\/\\]\./, persistent: true, ignoreInitial: true});
+    var watcher = chokidar.watch(desktopFolder, {ignored: /[\/\\]\./, persistent: true, ignoreInitial: true, interval: 1500});
 
     watcher.on('add', function(file) {
         exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
@@ -131,26 +143,30 @@ Pussh.prototype.upload = function(file) {
     file = this.randomizeFilename(file);
     file = this.prefixFilename(file);
 
-    notifier.notify({
-        title: 'Pussh',
-        message: 'Pussh has initiated a screenshot upload.',
-        icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined,
-        sender: 'com.intel.nw'
-    });
+    if (_self.settings.get('enableNotifications')) {
+        notifier.notify({
+            title: 'Pussh',
+            message: 'Pussh has initiated a screenshot upload.',
+            icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined,
+            sender: 'com.intel.nw'
+        });
+    }
 
     this.resize(file, function() {
         _self.services.get(selectedService).upload(file, function(url) {
             _self.trash(file);
             _self.copyToClipboard(url);
-            // TODO: Completion sound
+            
+            if (_self.settings.get('audioNotifications')) {
+                _self.tink.load();
+                _self.tink.play();
+            }
 
-            notifier.notify({
-                title: 'Pussh',
-                message: 'The screenshot URL has been copied to your clipboard.',
-                icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined,
-                sound: true,
-                sender: 'com.intel.nw'
-            });
+            if (_self.settings.get('openBrowser')) {
+                gui.Shell.openExternal(url);
+            }
+
+            _self.buildTrayMenu(url);
         });
     });
 }
@@ -234,9 +250,19 @@ Pussh.prototype.resize = function(file, callback) {
 
 // Copy url to clipboard after upload
 Pussh.prototype.copyToClipboard = function(url) {
-    var clipboard = gui.Clipboard.get();
+    var _self = this;
 
+    var clipboard = gui.Clipboard.get();
     clipboard.set(url);
+
+    if (_self.settings.get('enableNotifications')) {
+        notifier.notify({
+            title: 'Pussh',
+            message: 'The screenshot URL has been copied to your clipboard.',
+            icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined,
+            sender: 'com.intel.nw'
+        });
+    }
 }
 
 global.Pussh = new Pussh();

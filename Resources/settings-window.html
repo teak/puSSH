@@ -81,8 +81,8 @@
             </div>
           </div>
           <div class="form-group" ng-show="settings.randomizeFilenames === true">
-            <div class="col-sm-offset-3 col-sm-2">
-              <input type="number" class="form-control" ng-model="settings.randomizeFilenamesLength" placeholder="Length">
+            <div class="col-sm-offset-3 col-sm-3">
+              <span>Random Name Length </span><input type="number" class="form-control" ng-model="settings.randomizeFilenamesLength" placeholder="Length">
             </div>
           </div>
           <hr>
@@ -95,12 +95,38 @@
               </div>
             </div>
           </div>
-          <hr>
           <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
               <div class="checkbox">
                 <label>
                   <input type="checkbox" ng-model="settings.sendToTrash"> Move to Trash After Upload
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="settings.enableNotifications"> System Notification on Upload
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="settings.audioNotifications"> Sound Notification on Upload
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="settings.openBrowser"> Open in Browser After Upload
                 </label>
               </div>
             </div>
