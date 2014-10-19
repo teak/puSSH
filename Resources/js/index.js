@@ -86,22 +86,15 @@ Pussh.prototype.watch = function() {
 
     var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
-    var watcher = chokidar.watch(desktopFolder, {ignored: /Desktop\/.*[\/].*/, persistent: true, ignoreInitial: true, interval: 2000});
+    var watcher = chokidar.watch(desktopFolder, {ignored: /[\/\\]\./, persistent: true, ignoreInitial: true, interval: 1500});
 
     watcher.on('add', function(file) {
-
-        // dont find and reupload the same file after renaming. TODO: do this properly, with a temp folder
-        if (_self.isUploading) return;
-
         exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
             if(error) return;
 
             if(!parseInt(stdout)) return; // 1 = screenshot, 0 = not a screenshot
 
             console.log('Uploading %s', file);
-
-            _self.isUploading = true;
-
             _self.upload(file);
         });
     });
@@ -183,8 +176,6 @@ Pussh.prototype.upload = function(file) {
             }, 3000);
 
             _self.buildTrayMenu(url);
-
-            _self.isUploading = false;
         });
     });
 }
