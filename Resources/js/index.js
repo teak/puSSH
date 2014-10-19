@@ -152,6 +152,9 @@ Pussh.prototype.upload = function(file) {
         });
     }
 
+    // set status icon to active
+    _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-active-icon@2x.png');
+
     this.resize(file, function() {
         _self.services.get(selectedService).upload(file, function(url) {
             _self.trash(file);
@@ -165,6 +168,12 @@ Pussh.prototype.upload = function(file) {
             if (_self.settings.get('openBrowser')) {
                 gui.Shell.openExternal(url);
             }
+
+            // set status icon to complete for 3 seconds
+            _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-done-icon@2x.png');
+            setTimeout(function() {
+                _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png');
+            }, 3000);
 
             _self.buildTrayMenu(url);
         });
