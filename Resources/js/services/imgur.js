@@ -43,7 +43,6 @@ Service.prototype.upload = function(file, callback) {
                 var link = body.data.link.replace(/^http/,'https');
                 callback(link);
             } else {
-                console.log()
                 if(res.statusCode !== 500 && body.data && typeof body.data.error === 'object') {
                     window.alert('Imgur Error: '+body.data.error.message);
                 } else {
