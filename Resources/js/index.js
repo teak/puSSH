@@ -86,7 +86,9 @@ Pussh.prototype.watch = function() {
 
     var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
-    var watcher = chokidar.watch(desktopFolder, {ignored: /(^\.|.*\/$)/, persistent: true, ignoreInitial: true, interval: 200});
+    var watcher = chokidar.watch(desktopFolder, {ignored: function(file) {
+        return /\./.test(file) ? false : true;
+    }, persistent: true, ignoreInitial: true, interval: 200});
 
     watcher.on('add', function(file) {
         exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
@@ -184,9 +186,9 @@ Pussh.prototype.upload = function(file) {
 }
 
 Pussh.prototype.moveToTemp = function(file) {
-	var tmpFile;
+    var tmpFile;
 
-	switch(os.platform()) {
+    switch(os.platform()) {
         case 'win32':
             tmpFile = path.join(process.env['TEMP'], path.basename(file));
             break;
