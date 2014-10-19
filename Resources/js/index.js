@@ -16,12 +16,14 @@ process.on('uncaughtException', function(err) {
 
 function Pussh() {
     this.settings = new Settings();
+    this.name = gui.App.manifest.name;
     this.version = gui.App.manifest.version;
     this.window = gui.Window.get();
 
     this.services = new Services(this);
 
     this.watch();
+    this.launchAtStartup();
     this.setupTray();
 }
 
@@ -84,6 +86,39 @@ Pussh.prototype.watch = function() {
             _self.upload(file);
         });
     });
+}
+
+Pussh.prototype.launchAtStartup = function() {
+    if(this.settings.get('launchAtStartup') === true) {
+        switch(os.platform()) {
+            case 'win32':
+                // TODO
+                break;
+            case 'darwin':
+                var pathToExecutable = path.join(process.execPath, '../../../../../../').replace(/\/$/, '');
+                exec('osascript -e \'tell application "System Events" to make login item at end with properties {path:"'+pathToExecutable+'", hidden:false}\'');
+                break;
+            case 'linux':
+                // TODO
+                break;
+            default:
+                return;
+        }
+    } else {
+        switch(os.platform()) {
+            case 'win32':
+                // TODO
+                break;
+            case 'darwin':
+                exec('osascript -e \'tell application "System Events" to delete login item "'+this.name+'"\'');
+                break;
+            case 'linux':
+                // TODO
+                break;
+            default:
+                return;
+        }
+    }
 }
 
 // Uploads a new file

@@ -59,7 +59,7 @@ function Service(main) {
             type: 'textarea',
             password: true,
             default: '',
-            helpText: '(optional) The SSH Keyfile to login with'
+            helpText: '(optional) The SSH Private Key to login with'
         },
         {
             name: 'URL',
