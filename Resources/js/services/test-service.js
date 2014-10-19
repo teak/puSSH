@@ -38,11 +38,11 @@ function Service(main) {
 }
 
 Service.prototype.upload = function(file, callback) {
-    alert('Upload triggered on test service');
+    console.log('Upload triggered on test service');
 }
 
 Service.prototype.save = function(data) {
-    alert('Save triggered on test service');
+    console.log('Save triggered on test service');
 }
 
 // TODO: We should probably just extend these into each service, rather than defining them in each

@@ -22,10 +22,14 @@ app.controller('settings', function($scope, $rootScope) {
 
         $scope.selectedServiceSchema = Pussh.services._services[value._name].schema;
         $scope.selectedServiceForm = Pussh.services._services[value._name].form;
-        $scope.selectedServiceModel = {};
+        $scope.selectedServiceModel = Pussh.services._services[value._name].getSettings();
     });
 
     $scope.$watch('settings', function() {
         Pussh.settings.save();
+    }, true);
+
+    $scope.$watch('selectedServiceModel', function() {
+        Pussh.services._services[$scope.selectedService._name].saveSettings($scope.selectedServiceModel);
     }, true);
 });

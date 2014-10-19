@@ -115,17 +115,37 @@ Service.prototype.upload = function(file, callback) {
     });
 }
 
-Service.prototype.save = function(data) {
-    var options = Object.keys(data);
-
+Service.prototype.saveSettings = function(data) {
     var _self = this;
+
+    var options = Object.keys(data);
+    
     options.forEach(function(option) {
         if(option === 'password') {
-            _self.setPassword(options[option]);
+            _self.setPassword(option, data[option]);
         } else {
-            _self.setSetting(option, options[option]);
+            _self.setSetting(option, data[option]);
         }
     });
+}
+
+Service.prototype.getSettings = function() {
+    var _self = this;
+
+    var options = Object.keys(_self.schema.properties);
+
+    var out = {};
+    options.forEach(function(option) {
+        if(option === 'password') {
+            out[option] = _self.getPassword(option);
+        } else {
+            out[option] = _self.getSetting(option);
+        }
+    });
+
+    console.log(out);
+
+    return out;
 }
 
 // TODO: We should probably just extend these into each service, rather than defining them in each
