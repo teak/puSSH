@@ -86,7 +86,7 @@ Pussh.prototype.watch = function() {
 
     var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
-    var watcher = chokidar.watch(desktopFolder, {ignored: /[\/\\]\./, persistent: true, ignoreInitial: true, interval: 1500});
+    var watcher = chokidar.watch(desktopFolder, {ignored: /[\/\\](\.|.*\/$)/, persistent: true, ignoreInitial: true, interval: 200});
 
     watcher.on('add', function(file) {
         exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
@@ -95,6 +95,9 @@ Pussh.prototype.watch = function() {
             if(!parseInt(stdout)) return; // 1 = screenshot, 0 = not a screenshot
 
             console.log('Uploading %s', file);
+
+            file = _self.moveToTemp(file);
+
             _self.upload(file);
         });
     });
@@ -178,6 +181,27 @@ Pussh.prototype.upload = function(file) {
             _self.buildTrayMenu(url);
         });
     });
+}
+
+Pussh.prototype.moveToTemp = function(file) {
+	var tmpFile;
+
+	switch(os.platform()) {
+        case 'win32':
+            tmpFile = path.join(process.env['TEMP'], path.basename(file));
+            break;
+        case 'darwin':
+            tmpFile = path.join(process.env['TMPDIR'], path.basename(file));
+            break;
+        case 'linux':
+            tmpFile = path.join('/tmp', path.basename(file));
+            break;
+        default:
+            return;
+    }
+
+    fs.writeFileSync(tmpFile, fs.readFileSync(file));
+    return tmpFile;
 }
 
 // Trash file after upload
