@@ -146,7 +146,7 @@ Pussh.prototype.upload = function(file) {
     file = this.randomizeFilename(file);
     file = this.prefixFilename(file);
 
-    if (_self.settings.get('enableNotifications')) {
+    if(_self.settings.get('enableNotifications')) {
         notifier.notify({
             title: 'Pussh',
             message: 'Pussh has initiated a screenshot upload.',
@@ -163,12 +163,12 @@ Pussh.prototype.upload = function(file) {
             _self.trash(file);
             _self.copyToClipboard(url);
             
-            if (_self.settings.get('audioNotifications')) {
+            if(_self.settings.get('audioNotifications')) {
                 _self.tink.load();
                 _self.tink.play();
             }
 
-            if (_self.settings.get('openBrowser')) {
+            if(_self.settings.get('openBrowser')) {
                 gui.Shell.openExternal(url);
             }
 
@@ -288,7 +288,7 @@ Pussh.prototype.copyToClipboard = function(url) {
     var clipboard = gui.Clipboard.get();
     clipboard.set(url);
 
-    if (_self.settings.get('enableNotifications')) {
+    if(_self.settings.get('enableNotifications')) {
         notifier.notify({
             title: 'Pussh',
             message: 'The screenshot URL has been copied to your clipboard.',
