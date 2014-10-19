@@ -16,20 +16,20 @@ app.controller('settings', function($scope, $rootScope) {
     $scope.services = Pussh.services.list();
     $scope.settings = Pussh.settings.get();
     $scope.selectedService = Pussh.services.get($scope.settings.selectedService);
+    $scope.serviceSettings = $scope.selectedService.getSettings();
 
-    $scope.$watch('selectedService', function(value) {
-        $scope.settings.selectedService = value._name;
+    $scope.$watch('selectedService', function(service) {
+        $scope.settings.selectedService = service._name;
+        $scope.serviceSettings = $scope.selectedService.settings;
 
-        $scope.selectedServiceSchema = Pussh.services._services[value._name].schema;
-        $scope.selectedServiceForm = Pussh.services._services[value._name].form;
-        $scope.selectedServiceModel = Pussh.services._services[value._name].getSettings();
+        Pussh.settings.save();
     });
 
     $scope.$watch('settings', function() {
         Pussh.settings.save();
     }, true);
 
-    $scope.$watch('selectedServiceModel', function() {
-        Pussh.services._services[$scope.selectedService._name].saveSettings($scope.selectedServiceModel);
+    $scope.$watch('serviceSettings', function() {
+        $scope.selectedService.saveSettings();
     }, true);
 });

@@ -5,75 +5,73 @@ var util = require('util');
 var ServiceSettings = require('../service-settings');
 
 function Service(main) {
+    this._settings = main.settings;
     Service.super_.call(this);
 
     this._name = "sftp";
     this.name = "SFTP";
     this.description = "Upload screenshots to a server via SFTP";
 
-    this.form = [
-        'hostname',
-        'port',
-        'path',
-        'username',
+    this.settings = [
         {
-            key: 'password',
-            type: 'password'
+            name: 'Hostname',
+            key: 'hostname',
+            type: 'text',
+            password: false,
+            default: '',
+            helpText: 'The hostname or IP of the server'
         },
-        'private_key',
-        'url'
+        {
+            name: 'Port',
+            key: 'port',
+            type: 'text',
+            password: false,
+            default: 22,
+            helpText: 'The port on the server to connect to'
+        },
+        {
+            name: 'Path',
+            key: 'path',
+            type: 'text',
+            password: false,
+            default: '',
+            helpText: 'The path to the directory to store screenshots'
+        },
+        {
+            name: 'Username',
+            key: 'username',
+            type: 'text',
+            password: false,
+            default: '',
+            helpText: 'The username you wish to authenticate as'
+        },
+        {
+            name: 'Password',
+            key: 'password',
+            type: 'password',
+            password: true,
+            default: '',
+            helpText: 'The password to login with'
+        },
+        {
+            name: 'Private Key',
+            key: 'private_key',
+            type: 'textarea',
+            password: true,
+            default: '',
+            helpText: '(optional) The SSH Keyfile to login with'
+        },
+        {
+            name: 'URL',
+            key: 'url',
+            type: 'text',
+            password: false,
+            default: '',
+            helpText: 'The URL to the directory holding screenshots'
+        }
     ];
 
-    this.schema = {
-        "type": "object",
-        "title": "SFTP",
-        "properties": {
-            "hostname": {
-                "title": 'Hostname',
-                "type": 'string',
-                "description": 'The hostname or IP of the server'
-            },
-            "port": {
-                "title": 'Port',
-                "type": 'string',
-                "description": 'The port on the server to connect to'
-            },
-            "path": {
-                "title": 'Path',
-                "type": 'string',
-                "description": 'The path to the directory to store screenshots'
-            },
-            "username": {
-                "title": 'Username',
-                "type": 'string',
-                "description": 'The username you wish to authenticate as'
-            },
-            "password": {
-                "title": 'Password',
-                "type": 'string',
-                "description": 'The password to login with'
-            },
-            "private_key": {
-                "title": 'Private Key',
-                "type": 'string',
-                "description": '(optional) The SSH Keyfile to login with'
-            },
-            "url": {
-                "title": 'URL',
-                "type": 'string',
-                "description": 'The URL to the directory holding screenshots'
-            }
-        },
-        "required": [
-            'hostname',
-            'port',
-            'path',
-            'username',
-            'url'
-        ]
-    };
-
-    this._settings = main.settings;
+    this.loadSettings();
 }
 
 util.inherits(Service, ServiceSettings);

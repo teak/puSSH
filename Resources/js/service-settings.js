@@ -1,37 +1,22 @@
 function ServiceSettings() {
-    this.saveSettings = function(data) {
+    this.saveSettings = function() {
         var _self = this;
 
-        var options = Object.keys(data);
-        
-        options.forEach(function(option) {
-            if(option === 'password') {
-                _self.setPassword(option, data[option]);
+        this.settings.forEach(function(option) {
+            if(option.password) {
+                _self.setPassword(option.key, option.value);
             } else {
-                _self.setSetting(option, data[option]);
+                _self.setSetting(option.key, option.value);
             }
         });
     };
 
     this.getSettings = function() {
-        var _self = this;
-
-        var options = Object.keys(_self.schema.properties);
-
-        var out = {};
-        options.forEach(function(option) {
-            if(option === 'password') {
-                out[option] = _self.getPassword(option);
-            } else {
-                out[option] = _self.getSetting(option);
-            }
-        });
-
-        return out;
+        return this.settings;
     }
 
     this.getSetting = function(key) {
-        return this._settings.get(this._name+'_'+key);
+        return this._settings.get(this._name+'_'+key) || this.settings[key].default;
     }
 
     this.setSetting = function(key, value) {
@@ -44,6 +29,18 @@ function ServiceSettings() {
 
     this.setPassword = function(key, password) {
         return this._settings.setPassword(this._name+'_'+key, password);
+    }
+
+    // Loads settings at service initialization
+    this.loadSettings = function() {
+        var _self = this;
+        this.settings.forEach(function(option) {
+            if(option.password) {
+                option.value = _self.getPassword(option.key);
+            } else {
+                option.value = _self.getSetting(option.key);
+            }
+        });
     }
 }
 

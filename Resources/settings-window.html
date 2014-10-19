@@ -107,9 +107,20 @@
         </form>
       </div>
       <div class="tab-pane" id="service">
-        <form sf-schema="selectedServiceSchema" sf-form="selectedServiceForm" sf-model="selectedServiceModel"></form>
+        <form class="form-horizontal" role="form">
+          <div class="form-group" ng-repeat="setting in serviceSettings">
+            <label class="col-sm-3 control-label" ng-bind="setting.name"></label>
+            <div class="col-sm-9">
+              <input ng-if="setting.type === 'text'" type="text" class="form-control" ng-model="setting.value">
+              <textarea ng-if="setting.type === 'textarea'" class="form-control" ng-model="setting.value"></textarea>
+              <input ng-if="setting.type === 'password'" type="password" class="form-control" ng-model="setting.value">
+              <p class="help-block" ng-bind="setting.helpText"></p>
+            </div>
+            <hr>
+          </div>
+          <p ng-show="!serviceSettings.length">No settings configurable</p>
+        </form>
       </div>
     </div>
-
   </body>
 </html>
