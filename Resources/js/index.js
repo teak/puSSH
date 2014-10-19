@@ -58,7 +58,7 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
         click: function() {
             var settingsWindow = gui.Window.open('settings-window.html', {
                 "focus": true,
-                "toolbar": true,
+                "toolbar": false,
                 "width": 800,
                 "height": 600
             });
@@ -87,7 +87,7 @@ Pussh.prototype.watch = function() {
     var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
     var watcher = chokidar.watch(desktopFolder, {ignored: function(file) {
-        return /\./.test(file) ? false : true;
+        return (file === desktopFolder || file.indexOf('.') > -1) ? false : true;
     }, persistent: true, ignoreInitial: true, interval: 200});
 
     watcher.on('add', function(file) {
