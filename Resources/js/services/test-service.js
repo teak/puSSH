@@ -1,5 +1,8 @@
 var path = require('path');
 var ssh = require('ssh2');
+var util = require('util');
+
+var ServiceSettings = require('../service-settings');
 
 function Service(main) {
     this._name = "test_service";
@@ -37,29 +40,10 @@ function Service(main) {
     this._settings = main.settings;
 }
 
+util.inherits(Service, ServiceSettings);
+
 Service.prototype.upload = function(file, callback) {
     console.log('Upload triggered on test service');
-}
-
-Service.prototype.save = function(data) {
-    console.log('Save triggered on test service');
-}
-
-// TODO: We should probably just extend these into each service, rather than defining them in each
-Service.prototype.getSetting = function(key) {
-    return this._settings.get(this._name+'_'+key);
-}
-
-Service.prototype.setSetting = function(key, value) {
-    return this._settings.set(this._name+'_'+key, value);
-}
-
-Service.prototype.getPassword = function(key) {
-    return this._settings.getPassword(this._name+'_'+key);
-}
-
-Service.prototype.setPassword = function(key, password) {
-    return this._settings.setPassword(this._name+'_'+key, password);
 }
 
 module.exports = Service;

@@ -1,7 +1,12 @@
 var path = require('path');
 var ssh = require('ssh2');
+var util = require('util');
+
+var ServiceSettings = require('../service-settings');
 
 function Service(main) {
+    Service.super_.call(this);
+
     this._name = "sftp";
     this.name = "SFTP";
     this.description = "Upload screenshots to a server via SFTP";
@@ -71,6 +76,8 @@ function Service(main) {
     this._settings = main.settings;
 }
 
+util.inherits(Service, ServiceSettings);
+
 Service.prototype.upload = function(file, callback) {
     var _self = this;
 
@@ -113,56 +120,6 @@ Service.prototype.upload = function(file, callback) {
         passphrase: this.getPassword('private_key') ? this.getPassword('password') : undefined,
         privateKey: this.getPassword('private_key') || undefined
     });
-}
-
-Service.prototype.saveSettings = function(data) {
-    var _self = this;
-
-    var options = Object.keys(data);
-    
-    options.forEach(function(option) {
-        if(option === 'password') {
-            _self.setPassword(option, data[option]);
-        } else {
-            _self.setSetting(option, data[option]);
-        }
-    });
-}
-
-Service.prototype.getSettings = function() {
-    var _self = this;
-
-    var options = Object.keys(_self.schema.properties);
-
-    var out = {};
-    options.forEach(function(option) {
-        if(option === 'password') {
-            out[option] = _self.getPassword(option);
-        } else {
-            out[option] = _self.getSetting(option);
-        }
-    });
-
-    console.log(out);
-
-    return out;
-}
-
-// TODO: We should probably just extend these into each service, rather than defining them in each
-Service.prototype.getSetting = function(key) {
-    return this._settings.get(this._name+'_'+key);
-}
-
-Service.prototype.setSetting = function(key, value) {
-    return this._settings.set(this._name+'_'+key, value);
-}
-
-Service.prototype.getPassword = function(key) {
-    return this._settings.getPassword(this._name+'_'+key);
-}
-
-Service.prototype.setPassword = function(key, password) {
-    return this._settings.setPassword(this._name+'_'+key, password);
 }
 
 module.exports = Service;
