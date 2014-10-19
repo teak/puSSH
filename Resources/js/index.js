@@ -30,7 +30,7 @@ Pussh.prototype.setupTray = function() {
 
     var tray = new gui.Tray({
         title: 'pussh',
-        icon: '../img/icon.png'
+        icon: '../img/menu-icon@2x.png'
     });
 
     var menu = new gui.Menu();
@@ -99,7 +99,7 @@ Pussh.prototype.upload = function(file) {
     notifier.notify({
         title: 'Pussh',
         message: 'Pussh has initiated a screenshot upload.',
-        icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon@2x.png') : undefined,
+        icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined,
         sender: 'com.intel.nw'
     });
 
@@ -112,7 +112,7 @@ Pussh.prototype.upload = function(file) {
             notifier.notify({
                 title: 'Pussh',
                 message: 'The screenshot URL has been copied to your clipboard.',
-                icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon@2x.png') : undefined,
+                icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined,
                 sound: true,
                 sender: 'com.intel.nw'
             });
