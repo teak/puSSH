@@ -88,7 +88,7 @@ Pussh.prototype.watch = function() {
 
     var watcher = chokidar.watch(desktopFolder, {ignored: function(file) {
         return (file === desktopFolder || file.indexOf('.') > -1) ? false : true;
-    }, persistent: true, ignoreInitial: true, interval: 200});
+    }, persistent: true, ignoreInitial: true, interval: 1500});
 
     watcher.on('add', function(file) {
         exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
@@ -98,9 +98,9 @@ Pussh.prototype.watch = function() {
 
             console.log('Uploading %s', file);
 
-            file = _self.moveToTemp(file);
+            var newFile = _self.moveToTemp(file);
 
-            _self.upload(file);
+            _self.upload(newFile, file);
         });
     });
 }
@@ -140,7 +140,7 @@ Pussh.prototype.launchAtStartup = function() {
 
 // Uploads a new file
 // TODO: Tray icon status change to uploading
-Pussh.prototype.upload = function(file) {
+Pussh.prototype.upload = function(file, oldFile) {
     var _self = this;
 
     var selectedService = _self.settings.get('selectedService');
@@ -162,7 +162,8 @@ Pussh.prototype.upload = function(file) {
 
     this.resize(file, function() {
         _self.services.get(selectedService).upload(file, function(url) {
-            _self.trash(file);
+            _self.trash(oldFile);
+            _self.deleteFile(file);
             _self.copyToClipboard(url);
             
             if(_self.settings.get('audioNotifications')) {
@@ -174,7 +175,7 @@ Pussh.prototype.upload = function(file) {
                 gui.Shell.openExternal(url);
             }
 
-            // set status icon to complete for 3 seconds
+            // set status icon to 'complete' for 3 seconds
             _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-done-icon@2x.png');
             setTimeout(function() {
                 _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png');
@@ -230,6 +231,10 @@ Pussh.prototype.trash = function(file) {
 
     // We could just delete the file, but what if the user wants it back
     fs.rename(file, path.join(trashFolder, path.basename(file)));
+}
+
+Pussh.prototype.deleteFile = function(file) {
+    fs.unlinkSync(file);
 }
 
 Pussh.prototype.randomizeFilename = function(file) {
