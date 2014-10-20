@@ -60,7 +60,7 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
                 "focus": true,
                 "toolbar": false,
                 "width": 800,
-                "height": 600
+                "height": 750
             });
         }
     }));
