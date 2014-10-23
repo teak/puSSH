@@ -35,6 +35,22 @@ Pussh.prototype.setupTray = function() {
         icon: path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png'),
         alticon: path.join(process.cwd(), 'Resources', 'img', 'menu-alt-icon@2x.png')
     });
+
+    var nativeMenuBar = new gui.Menu({ type: "menubar" });
+    nativeMenuBar.createMacBuiltin(this.name);
+    this.window.menu = nativeMenuBar;
+}
+
+Pussh.prototype.setTrayState = function(state) {
+    var _self = this;
+
+    if (state == 'off') {
+        _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png');
+    } else if (state == 'active') {
+        _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-active-icon@2x.png');
+    } else if (state == 'complete') {
+        _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-done-icon@2x.png');
+    }
 }
 
 Pussh.prototype.buildTrayMenu = function(lastURL) {
@@ -49,6 +65,11 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
             click: function() {
                 _self.copyToClipboard(lastURL);
             }
+        }));
+
+        // add a separator
+        menu.append(new gui.MenuItem({
+            type: 'separator'
         }));
     }
 
@@ -74,10 +95,6 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
     }));
 
     _self.tray.menu = menu;
-
-    var nativeMenuBar = new gui.Menu({ type: "menubar" });
-    nativeMenuBar.createMacBuiltin(this.name);
-    this.window.menu = nativeMenuBar;
 }
 
 // TODO: Watching for screenshots works on OSX, but what about Windows/*nix
@@ -158,7 +175,7 @@ Pussh.prototype.upload = function(file, oldFile) {
     }
 
     // set status icon to active
-    _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-active-icon@2x.png');
+    _self.setTrayState('active');
 
     this.resize(file, function() {
         _self.services.get(selectedService).upload(file, function(url) {
@@ -176,9 +193,9 @@ Pussh.prototype.upload = function(file, oldFile) {
             }
 
             // set status icon to 'complete' for 3 seconds
-            _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-done-icon@2x.png');
+            _self.setTrayState('complete');
             setTimeout(function() {
-                _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png');
+                _self.setTrayState('off');
             }, 3000);
 
             _self.buildTrayMenu(url);
@@ -295,12 +312,15 @@ Pussh.prototype.copyToClipboard = function(url) {
     var clipboard = gui.Clipboard.get();
     clipboard.set(url);
 
-    if(_self.settings.get('enableNotifications')) {
+    if (_self.settings.get('enableNotifications')) {
         notifier.notify({
             title: 'Pussh',
             message: 'The screenshot URL has been copied to your clipboard.',
             icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined,
-            sender: 'com.intel.nw'
+            sender: 'com.intel.nw',
+            wait: true
+        }).on('click', function (notifierObject, options) {
+            gui.Shell.openExternal(url);
         });
     }
 }
