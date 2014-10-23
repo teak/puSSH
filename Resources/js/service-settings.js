@@ -16,7 +16,7 @@ function ServiceSettings() {
     }
 
     this.getSetting = function(key) {
-        return this._settings.get(this._name+'_'+key) || this.settings[key].default;
+        return this._settings.get(this._name+'_'+key);
     }
 
     this.setSetting = function(key, value) {
@@ -38,7 +38,7 @@ function ServiceSettings() {
             if(option.password) {
                 option.value = _self.getPassword(option.key);
             } else {
-                option.value = _self.getSetting(option.key);
+                option.value = _self.getSetting(option.key) || option.default;
             }
         });
     }
