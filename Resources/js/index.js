@@ -27,6 +27,31 @@ function Pussh() {
     this.launchAtStartup();
     this.setupTray();
     this.buildTrayMenu(false);
+
+    this._osxDarkTheme = false;
+    var _self = this;
+    setInterval(function() {
+        _self.osxDarkTheme();
+    }, 5000);
+    this.osxDarkTheme();
+}
+
+Pussh.prototype.osxDarkTheme = function() {
+    var _self = this;
+
+    if(os.platform() !== 'darwin') return;
+
+    exec('/usr/bin/defaults read -g AppleInterfaceStyle', function(error, stdout) {
+        if(error && _self._osxDarkTheme === true) {
+            _self._osxDarkTheme = false;
+            return _self.setTrayState('off');
+        }
+
+        if(stdout.trim() === 'Dark' && _self._osxDarkTheme === false) {
+            _self._osxDarkTheme = true;
+            _self.setTrayState('off');
+        }
+    });
 }
 
 Pussh.prototype.setupTray = function() {
@@ -44,8 +69,8 @@ Pussh.prototype.setupTray = function() {
 Pussh.prototype.setTrayState = function(state) {
     var _self = this;
 
-    if (state == 'off') {
-        _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png');
+    if(state == 'off') {
+        _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', this._osxDarkTheme ? 'menu-alt-icon@2x.png' : 'menu-icon@2x.png');
     } else if (state == 'active') {
         _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-active-icon@2x.png');
     } else if (state == 'complete') {
@@ -59,7 +84,7 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
     var menu = new gui.Menu();
 
     // add the last url
-    if (lastURL) {
+    if(lastURL) {
         menu.append(new gui.MenuItem({
             label: lastURL,
             click: function() {

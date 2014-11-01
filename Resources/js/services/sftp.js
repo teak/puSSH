@@ -105,6 +105,7 @@ Service.prototype.upload = function(file, callback) {
                 var url = _self.getSetting('url')+encodeURIComponent(fileName);
 
                 callback(url);
+                conn.end();
             });
         });
     }).on('error', function(e) {
