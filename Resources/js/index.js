@@ -106,7 +106,7 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
                 "focus": true,
                 "toolbar": false,
                 "width": 800,
-                "height": 750
+                "height": 500
             });
         }
     }));
