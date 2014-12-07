@@ -1,6 +1,8 @@
 pussh
 =====
-    
+
+Mac OS X:
+
     use the 32-bit version of node-webkit
 
     npm install
