@@ -23,6 +23,8 @@ function Pussh() {
 
     this.services = new Services(this);
 
+    this._settingsWindow = null;
+
     this.watch();
     this.launchAtStartup();
     this.setupTray();
@@ -34,6 +36,25 @@ function Pussh() {
         _self.osxDarkTheme();
     }, 5000);
     this.osxDarkTheme();
+
+    gui.App.on('reopen', function() {
+        _self.showSettingsWindow();
+    });
+}
+
+Pussh.prototype.showSettingsWindow = function() {
+    var _self = this;
+
+    try {// it's just sooo much easier to try catch, then try and manage the window :P
+        _self._settingsWindow.focus();
+    } catch (err) {
+        _self._settingsWindow = gui.Window.open('settings-window.html', {
+            "focus": true,
+            "toolbar": false,
+            "width": 800,
+            "height": 500
+        });
+    }  
 }
 
 Pussh.prototype.osxDarkTheme = function() {
@@ -102,12 +123,7 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
     menu.append(new gui.MenuItem({
         label: 'Settings',
         click: function() {
-            var settingsWindow = gui.Window.open('settings-window.html', {
-                "focus": true,
-                "toolbar": false,
-                "width": 800,
-                "height": 500
-            });
+            _self.showSettingsWindow();
         }
     }));
 
@@ -129,8 +145,8 @@ Pussh.prototype.watch = function() {
     var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
     var watcher = chokidar.watch(desktopFolder, {ignored: function(file) {
-        return (file === desktopFolder || file.indexOf('.') > -1) ? false : true;
-    }, persistent: true, ignoreInitial: true, interval: 1500});
+        return (file === desktopFolder || file.indexOf('.png') > -1) ? false : true;
+    }, persistent: true, ignoreInitial: true, interval: 1500, usePolling: false});
 
     watcher.on('add', function(file) {
         exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
