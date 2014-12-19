@@ -1,5 +1,5 @@
 {
-  "name": "pussh",
+  "name": "Pussh",
   "main": "./resources/index.html",
   "version": "0.0.1",
   "window": {
@@ -12,10 +12,7 @@
   },
   "node-remote": "<local>",
   "dependencies": {
-    "chokidar": "^0.10.0",
     "keytar": "^2.0.3",
-    "node-notifier": "^4.0.2",
-    "nw-gyp": "^0.12.2",
     "request": "^2.45.0",
     "ssh2": "^0.3.6"
   }

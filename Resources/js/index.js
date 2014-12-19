@@ -1,8 +1,6 @@
-var chokidar = require('chokidar');
 var exec = require('child_process').exec;
 var fs = require('fs');
 var gui = require('nw.gui');
-var notifier = require('node-notifier');
 var os = require('os');
 var path = require('path');
 
@@ -27,38 +25,14 @@ function Pussh() {
     this.launchAtStartup();
     this.setupTray();
     this.buildTrayMenu(false);
-
-    this._osxDarkTheme = false;
-    var _self = this;
-    setInterval(function() {
-        _self.osxDarkTheme();
-    }, 5000);
-    this.osxDarkTheme();
-}
-
-Pussh.prototype.osxDarkTheme = function() {
-    var _self = this;
-
-    if(os.platform() !== 'darwin') return;
-
-    exec('/usr/bin/defaults read -g AppleInterfaceStyle', function(error, stdout) {
-        if(error && _self._osxDarkTheme === true) {
-            _self._osxDarkTheme = false;
-            return _self.setTrayState('off');
-        }
-
-        if(stdout.trim() === 'Dark' && _self._osxDarkTheme === false) {
-            _self._osxDarkTheme = true;
-            _self.setTrayState('off');
-        }
-    });
 }
 
 Pussh.prototype.setupTray = function() {
     // create status item
     this.tray = new gui.Tray({
         icon: path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png'),
-        alticon: path.join(process.cwd(), 'Resources', 'img', 'menu-alt-icon@2x.png')
+        alticon: path.join(process.cwd(), 'Resources', 'img', 'menu-alt-icon@2x.png'),
+        iconsAreTemplates: true
     });
 
     var nativeMenuBar = new gui.Menu({ type: "menubar" });
@@ -69,11 +43,14 @@ Pussh.prototype.setupTray = function() {
 Pussh.prototype.setTrayState = function(state) {
     var _self = this;
 
-    if(state == 'off') {
-        _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', this._osxDarkTheme ? 'menu-alt-icon@2x.png' : 'menu-icon@2x.png');
-    } else if (state == 'active') {
+    if(state === 'off') {
+        _self.tray.iconsAreTemplates = true;
+        _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png');
+    } else if (state === 'active') {
+        _self.tray.iconsAreTemplates = false;
         _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-active-icon@2x.png');
-    } else if (state == 'complete') {
+    } else if (state === 'complete') {
+        _self.tray.iconsAreTemplates = false;
         _self.tray.icon = path.join(process.cwd(), 'Resources', 'img', 'menu-done-icon@2x.png');
     }
 }
@@ -128,23 +105,43 @@ Pussh.prototype.watch = function() {
 
     var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
-    var watcher = chokidar.watch(desktopFolder, {ignored: function(file) {
-        return (file === desktopFolder || file.indexOf('.') > -1) ? false : true;
-    }, persistent: true, ignoreInitial: true, interval: 1500});
+    var checkedFiles = [];
 
-    watcher.on('add', function(file) {
-        exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+file+'"', function(error, stdout) {
-            if(error) return;
+    setInterval(function() {
+        fs.readdir(desktopFolder, function(err, files) {
+            if(!err && files.length) {
+                var filteredFiles = files.filter(function(file) {
+                    return (checkedFiles.indexOf(file) === -1 && /.png$/.test(file)) ? true : false;
+                });
 
-            if(!parseInt(stdout)) return; // 1 = screenshot, 0 = not a screenshot
+                filteredFiles.forEach(function(file) {
+                    filePath = path.join(desktopFolder, file);
 
-            console.log('Uploading %s', file);
+                    var fStats = fs.statSync(filePath);
 
-            var newFile = _self.moveToTemp(file);
+                    if(Date.now()-fStats.ctime.getTime() > 3000) return;
 
-            _self.upload(newFile, file);
+                    exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+filePath+'"', function(error, stdout) {
+                        if(error) return;
+
+                        // 1 = screenshot, 0 = not a screenshot
+                        if(!parseInt(stdout)) {
+                            checkedFiles.splice(checkedFiles.indexOf(file), 1);
+                            return;
+                        }
+
+                        console.log('Uploading %s', filePath);
+
+                        var newFile = _self.moveToTemp(filePath);
+
+                        _self.upload(newFile, filePath);
+                    });
+                });
+
+                checkedFiles = files;
+            }
         });
-    });
+    }, 1000);
 }
 
 Pussh.prototype.launchAtStartup = function() {
@@ -191,11 +188,9 @@ Pussh.prototype.upload = function(file, oldFile) {
     file = this.prefixFilename(file);
 
     if(_self.settings.get('enableNotifications')) {
-        notifier.notify({
-            title: 'Pussh',
-            message: 'Pussh has initiated a screenshot upload.',
-            icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined,
-            sender: 'com.intel.nw'
+        new window.Notification('Pussh', {
+            body: 'Pussh has initiated a screenshot upload.',
+            icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined
         });
     }
 
@@ -338,13 +333,12 @@ Pussh.prototype.copyToClipboard = function(url) {
     clipboard.set(url);
 
     if (_self.settings.get('enableNotifications')) {
-        notifier.notify({
-            title: 'Pussh',
-            message: 'The screenshot URL has been copied to your clipboard.',
-            icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined,
-            sender: 'com.intel.nw',
-            wait: true
-        }).on('click', function (notifierObject, options) {
+        var notification = new window.Notification('Pussh', {
+            body: 'The screenshot URL has been copied to your clipboard.',
+            icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined
+        });
+
+        notification.addEventListener('click', function() {
             gui.Shell.openExternal(url);
         });
     }
