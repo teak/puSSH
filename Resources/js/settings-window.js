@@ -8,6 +8,8 @@ app.run(function($rootScope) {
     $rootScope.Version = $rootScope.GUI.App.manifest.version;
     $rootScope.Window = $rootScope.GUI.Window.get();
     $rootScope.Pussh = global.Pussh;
+
+    $rootScope.Window.focus();
 });
 
 app.controller('settings', function($scope, $rootScope) {
