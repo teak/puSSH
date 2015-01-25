@@ -8,8 +8,8 @@ var Settings = require('./js/settings');
 var Services = require('./js/services');
 
 process.on('uncaughtException', function(err) {
-  console.log('Caught exception: ', err);
-  window.alert('There was an uncaught exception.');
+    console.log('Caught exception: ', err);
+    window.alert('There was an uncaught exception.' + err);
 });
 
 function Pussh() {
@@ -28,8 +28,10 @@ function Pussh() {
     this.setupTray();
     this.buildTrayMenu(false);
 
+    gui.Screen.Init();
+
     gui.App.on('reopen', function() {
-        _self.showSettingsWindow();
+        this.showSettingsWindow();
     });
 }
 
@@ -45,7 +47,7 @@ Pussh.prototype.showSettingsWindow = function() {
             "width": 800,
             "height": 500
         });
-    }  
+    }
 }
 
 Pussh.prototype.setupTray = function() {
@@ -53,11 +55,13 @@ Pussh.prototype.setupTray = function() {
     this.tray = new gui.Tray({
         icon: path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png'),
         alticon: path.join(process.cwd(), 'Resources', 'img', 'menu-alt-icon@2x.png'),
-        iconsAreTemplates: true
+        iconsAreTemplates: false
     });
 
     var nativeMenuBar = new gui.Menu({ type: "menubar" });
-    nativeMenuBar.createMacBuiltin(this.name);
+    if (os.platform() === 'darwin') {
+        nativeMenuBar.createMacBuiltin(this.name);
+    }
     this.window.menu = nativeMenuBar;
 }
 
@@ -119,45 +123,101 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
 Pussh.prototype.watch = function() {
     var _self = this;
 
-    var desktopFolder = path.join(process.env['HOME'], 'Desktop');
+    var platform = os.platform();
 
-    var checkedFiles = [];
+    if (platform == 'darwin') {
+        var desktopFolder = path.join(['HOME'], 'Desktop');
 
-    setInterval(function() {
-        fs.readdir(desktopFolder, function(err, files) {
-            if(!err && files.length) {
-                var filteredFiles = files.filter(function(file) {
-                    return (checkedFiles.indexOf(file) === -1 && /.png$/.test(file)) ? true : false;
-                });
-
-                filteredFiles.forEach(function(file) {
-                    filePath = path.join(desktopFolder, file);
-
-                    var fStats = fs.statSync(filePath);
-
-                    if(Date.now()-fStats.ctime.getTime() > 3000) return;
-
-                    exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+filePath+'"', function(error, stdout) {
-                        if(error) return;
-
-                        // 1 = screenshot, 0 = not a screenshot
-                        if(!parseInt(stdout)) {
-                            checkedFiles.splice(checkedFiles.indexOf(file), 1);
-                            return;
-                        }
-
-                        console.log('Uploading %s', filePath);
-
-                        var newFile = _self.moveToTemp(filePath);
-
-                        _self.upload(newFile, filePath);
+        var checkedFiles = [];
+        setInterval(function() {
+            fs.readdir(desktopFolder, function(err, files) {
+                if(!err && files.length) {
+                    var filteredFiles = files.filter(function(file) {
+                        return (checkedFiles.indexOf(file) === -1 && /.png$/.test(file)) ? true : false;
                     });
-                });
 
-                checkedFiles = files;
+                    filteredFiles.forEach(function(file) {
+                        filePath = path.join(desktopFolder, file);
+
+                        var fStats = fs.statSync(filePath);
+
+                        if(Date.now()-fStats.ctime.getTime() > 3000) return;
+
+                        exec('/usr/bin/mdls --raw --name kMDItemIsScreenCapture "'+filePath+'"', function(error, stdout) {
+                            if(error) return;
+
+                            // 1 = screenshot, 0 = not a screenshot
+                            if(!parseInt(stdout)) {
+                                checkedFiles.splice(checkedFiles.indexOf(file), 1);
+                                return;
+                            }
+
+                            console.log('Uploading %s', filePath);
+
+                            var newFile = _self.moveToTemp(filePath);
+
+                            _self.upload(newFile, filePath);
+                        });
+                    });
+
+                    checkedFiles = files;
+                }
+            });
+        }, 1000);
+    } else if (platform == 'win32') {
+        var windowsFullScreenshot = new gui.Shortcut({
+            key: "Alt+Shift+3",
+            active: function() {
+                _self.windowsCapture(false);
             }
         });
-    }, 1000);
+
+        var windowsCropScreenshot = new gui.Shortcut({
+            key: "Alt+Shift+4",
+            active: function() {
+                _self.windowsCapture(true);
+            }
+        });
+
+        gui.App.registerGlobalHotKey(windowsFullScreenshot);
+        gui.App.registerGlobalHotKey(windowsCropScreenshot);
+    }
+}
+
+Pussh.prototype.windowsCapture = function(needsCrop) {
+    var _self = this;
+
+    if (os.platform() == 'win32') {
+
+        var filePath = path.join(process.env['TEMP'], 'pussh_screen.png');
+        exec(path.join(process.cwd(), 'Resources', 'exe', 'boxcutter.exe') + ' -f ' + filePath, function(error, stdout) {
+            if (error) return;
+
+            if (!needsCrop) {
+                _self.upload(filePath, filePath);
+            } else {
+                var screens = gui.Screen.screens;
+                for (var i = 0; i < screens.length; i++) {
+                    //asdf
+                }
+
+                gui.Window.open('windows-crop.html', {
+                    "focus": true,
+                    "toolbar": false,
+                    "transparent": true,
+                    "frame": false,
+                    "resizable": false,
+                    "fullscreen": true,
+                    "width": screens[0].bounds.width,
+                    "height": screens[0].bounds.height,
+                    "x": screens[0].bounds.x,
+                    "y": screens[0].bounds.y
+                });
+            }
+            
+        });
+
+    }
 }
 
 Pussh.prototype.launchAtStartup = function() {
@@ -273,10 +333,10 @@ Pussh.prototype.trash = function(file) {
             trashFolder = path.join(process.env['SystemRoot'], '$Recycle.bin', process.env['SID']);
             break;
         case 'darwin':
-            trashFolder = path.join(process.env['HOME'], '.Trash');
+            trashFolder = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], '.Trash');
             break;
         case 'linux':
-            trashFolder = path.join(process.env['HOME'], '.local', 'share', 'Trash');
+            trashFolder = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], '.local', 'share', 'Trash');
             break;
         default:
             return;

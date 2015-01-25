@@ -10,10 +10,10 @@ function Services(main) {
 
 Services.prototype.load = function() {
     var _self = this;
-    fs.readdirSync(path.join(__dirname, 'services')).forEach(function(file) {
+    fs.readdirSync(path.join(process.cwd(), 'Resources', 'js', 'services')).forEach(function(file) {
         if(!/\.js$/.test(file)) return;
 
-        var module = require(path.join(__dirname, 'services', file));
+        var module = require(path.join(process.cwd(), 'Resources', 'js', 'services', file));
 
         var initModule = new module(_self);
 

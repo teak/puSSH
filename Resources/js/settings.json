@@ -3,10 +3,10 @@
 	"retinaResize": false,
 	"launchAtStartup": false,
 	"checkForUpdates": false,
-	"selectedService": "sftp",
+	"selectedService": "imgur",
 	"prefixFilenames": "",
 	"randomizeFilenames": true,
-	"randomizeFilenamesLength": 25,
+	"randomizeFilenamesLength": 12,
 	"openBrowser": false,
 	"enableNotifications": true,
 	"audioNotifications": true
