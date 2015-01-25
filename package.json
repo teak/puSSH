@@ -12,6 +12,7 @@
   },
   "node-remote": "<local>",
   "dependencies": {
+    "png-crop": "^0.0.0",
     "request": "^2.45.0",
     "ssh2": "^0.3.6"
   }

@@ -191,15 +191,43 @@ Pussh.prototype.windowsCapture = function(needsCrop) {
 
     if (os.platform() == 'win32') {
 
-        var filePath = path.join(process.env['TEMP'], 'pussh_screen.png');
-        exec(path.join(process.cwd(), 'Resources', 'exe', 'boxcutter.exe') + ' -f ' + filePath, function(error, stdout) {
+        // setup files
+        var basePath;
+        switch(os.platform()) {
+            case 'win32':
+                basePath = process.env['TEMP'];
+                break;
+            case 'darwin':
+                basePath = process.env['TMPDIR'];
+                break;
+            case 'linux':
+                basePath = '/tmp';
+                break;
+            default:
+                return;
+        }
+        var fullImg = path.join(basePath, 'pussh_screen.png');
+        var cropImg = path.join(basePath, 'pussh_screen_crop.png');
+
+        // take the screenshot and start crop if needed
+        exec(path.join(process.cwd(), 'Resources', 'exe', 'boxcutter.exe') + ' -f ' + fullImg, function(error, stdout) {
             if (error) return;
 
             if (!needsCrop) {
-                _self.upload(filePath, filePath);
+                _self.upload(fullImg, fullImg);
             } else {
-                gui.Window.open('windows-crop.html', {
-                    "toolbar": false
+                var cropWindow = gui.Window.open('windows-crop.html', {
+                    "toolbar": false,
+                    "width": 100,
+                    "height": 100,
+                    "x": 0,
+                    "y": 0
+                });
+
+                cropWindow.on('closed', function() {
+                    if (fs.existsSync(cropImg)) {
+                        _self.upload(cropImg, fullImg);
+                    }
                 });
             }
         });
