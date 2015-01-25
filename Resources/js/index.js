@@ -30,8 +30,10 @@ function Pussh() {
 
     gui.Screen.Init();
 
+    var _self = this;
+
     gui.App.on('reopen', function() {
-        this.showSettingsWindow();
+        _self.showSettingsWindow();
     });
 }
 
@@ -126,7 +128,7 @@ Pussh.prototype.watch = function() {
     var platform = os.platform();
 
     if (platform == 'darwin') {
-        var desktopFolder = path.join(['HOME'], 'Desktop');
+        var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
         var checkedFiles = [];
         setInterval(function() {
@@ -196,25 +198,10 @@ Pussh.prototype.windowsCapture = function(needsCrop) {
             if (!needsCrop) {
                 _self.upload(filePath, filePath);
             } else {
-                var screens = gui.Screen.screens;
-                for (var i = 0; i < screens.length; i++) {
-                    //asdf
-                }
-
                 gui.Window.open('windows-crop.html', {
-                    "focus": true,
-                    "toolbar": false,
-                    "transparent": true,
-                    "frame": false,
-                    "resizable": false,
-                    "fullscreen": true,
-                    "width": screens[0].bounds.width,
-                    "height": screens[0].bounds.height,
-                    "x": screens[0].bounds.x,
-                    "y": screens[0].bounds.y
+                    "toolbar": false
                 });
             }
-            
         });
 
     }
@@ -333,10 +320,10 @@ Pussh.prototype.trash = function(file) {
             trashFolder = path.join(process.env['SystemRoot'], '$Recycle.bin', process.env['SID']);
             break;
         case 'darwin':
-            trashFolder = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], '.Trash');
+            trashFolder = path.join(process.env['HOME'], '.Trash');
             break;
         case 'linux':
-            trashFolder = path.join(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], '.local', 'share', 'Trash');
+            trashFolder = path.join(process.env['HOME'], '.local', 'share', 'Trash');
             break;
         default:
             return;
