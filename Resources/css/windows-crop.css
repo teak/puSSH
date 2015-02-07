@@ -17,22 +17,6 @@ body {
     z-index: 150;
 }
 
-#info {
-    position: fixed;
-    top: 50px;
-    left: 50px;
-    right: auto;
-    bottom: auto;
-
-    border: solid 2px rgba(144,144,144,0.5);
-    border-radius: 10px;
-
-    padding: 20px 50px;
-    background: rgba(255,255,255,0.5);
-
-    z-index: 100;
-}
-
 #overlay {
     position: fixed;
     top: 0px;

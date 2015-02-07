@@ -33,43 +33,6 @@ $(function() {
     // load the img preview
     $('#img').attr('src', fullImg);
 
-    // close button
-    $('.close').on('click', function(e) {
-        cropWindow.leaveFullscreen();
-        cropWindow.close();
-    });
-
-    // move info text
-    var hoverLocation = 0;
-    var speed = 100;
-    $('#info').on('mouseleave', function(e) {
-        if (hoverLocation == 0) {
-            $('#info').animate({
-                left: $(window).width() - $('#info').outerWidth() - 50
-            }, speed, function() {
-                hoverLocation = 1;
-            });
-        } else if (hoverLocation == 1) {
-            $('#info').animate({
-                top: $(window).height() - $('#info').outerHeight() - 50
-            }, speed, function() {
-                hoverLocation = 2;
-            });
-        } else if (hoverLocation == 2) {
-            $('#info').animate({
-                left: 50
-            }, speed, function() {
-                hoverLocation = 3;
-            });
-        } else if (hoverLocation == 3) {
-            $('#info').animate({
-                top: 50
-            }, speed, function() {
-                hoverLocation = 0;
-            });
-        }
-    });
-
     var dragging = false;
     var mouseLoc = {x: 0, y: 0};
     var dragStart = {x: 0, y: 0};
@@ -77,7 +40,7 @@ $(function() {
     var dragEnd = {x: 0, y: 0};
 
     // update mouse location
-    $('body').on('mousemove', function(e) {
+    $(window).on('mousemove', function(e) {
         mouseLoc.x = e.clientX;
         mouseLoc.y = e.clientY;
 
@@ -109,7 +72,7 @@ $(function() {
     });
 
     // start cropping
-    $('body').on('mousedown', function(e) {
+    $(window).on('mousedown', function(e) {
         dragging = true;
 
         dragStart.x = mouseLoc.x;
@@ -129,7 +92,7 @@ $(function() {
     });
 
     // stop cropping
-    $('body').on('mouseup', function(e) {
+    $(window).on('mouseup', function(e) {
         if (!dragging) return;
         dragging = false;
 
