@@ -192,26 +192,18 @@ Pussh.prototype.windowsCapture = function(needsCrop) {
     if (os.platform() == 'win32') {
 
         // setup files
-        var basePath;
-        switch(os.platform()) {
-            case 'win32':
-                basePath = process.env['TEMP'];
-                break;
-            case 'darwin':
-                basePath = process.env['TMPDIR'];
-                break;
-            case 'linux':
-                basePath = '/tmp';
-                break;
-            default:
-                return;
-        }
+        var basePath = process.env['TEMP'];
         var fullImg = path.join(basePath, 'pussh_screen.png');
         var cropImg = path.join(basePath, 'pussh_screen_crop.png');
 
         // take the screenshot and start crop if needed
-        exec(path.join(process.cwd(), 'Resources', 'exe', 'boxcutter.exe') + ' -f ' + fullImg, function(error, stdout) {
+        exec(path.join(process.cwd(), 'Resources', 'exe', 'PusshCap.exe') + ' ' + fullImg, function(error, stdout) {
             if (error) return;
+
+            var theScreen = [0,0,100,100,0,0,"cap.png"];
+            if (stdout) {
+                theScreen = stdout.split(',');
+            }
 
             if (!needsCrop) {
                 _self.upload(fullImg, fullImg);
@@ -220,8 +212,8 @@ Pussh.prototype.windowsCapture = function(needsCrop) {
                     "toolbar": false,
                     "width": 100,
                     "height": 100,
-                    "x": 0,
-                    "y": 0
+                    "x": parseInt(theScreen[4]),
+                    "y": parseInt(theScreen[5])
                 });
 
                 cropWindow.on('closed', function() {
