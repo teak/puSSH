@@ -1,6 +1,8 @@
 Pussh
 =====
-	
+
+The cross platform, multi-functional screenshot utility that doesn't suck. http://pussh.me
+
 Build Instructions
 	
 1. Install node
