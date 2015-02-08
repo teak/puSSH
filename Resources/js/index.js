@@ -217,7 +217,8 @@ Pussh.prototype.windowsCapture = function(needsCrop) {
                     "y": parseInt(theScreen[5])
                 });
 
-                cropWindow.on('closed', function() {
+                cropWindow.on('leave-fullscreen', function() {
+                    cropWindow.close(true);
                     if (fs.existsSync(cropImg)) {
                         _self.upload(cropImg, fullImg);
                     }

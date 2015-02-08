@@ -110,7 +110,6 @@ $(function() {
         // dont upload if the crop is 0
         if (dragSize.x == 0 && dragSize.y == 0) {
             cropWindow.leaveFullscreen();
-            cropWindow.close();
         } else {
             var left = dragEnd.x > dragStart.x ? dragStart.x : dragEnd.x;
             var top = dragEnd.y > dragStart.y ? dragStart.y : dragEnd.y;
@@ -118,7 +117,6 @@ $(function() {
             // crop and save img. main script looks for the cropped file on cropWindow closed
             PNGCrop.crop(fullImg, cropImg, {width: dragSize.x, height: dragSize.y, top: top, left: left}, function(err) {
                 cropWindow.leaveFullscreen();
-                cropWindow.close();
             });
         }
     });
