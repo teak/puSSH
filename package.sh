@@ -2,15 +2,15 @@
 
 sudo npm install -g node-gyp n
 npm install
-n v0.11.14
+n v0.12.0
 
 version=$(node -pe "require(process.argv[1]).version" ./package.json)
-dl="http://dl.nwjs.io/v0.11.5/node-webkit-v0.11.5-osx-x64.zip"
+dl="http://dl.nwjs.io/v0.11.6/node-webkit-v0.11.6-osx-x64.zip"
 cwd=$(pwd)
 
 cd node_modules/keytar
 nw-gyp clean
-nw-gyp configure --target=0.11.5 --arch=x64
+nw-gyp configure --target=0.11.6 --arch=x64
 nw-gyp build
 cd $cwd
 
