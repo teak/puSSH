@@ -28,6 +28,8 @@ function Pussh() {
     this.setupTray();
     this.buildTrayMenu(false);
 
+    var _self = this;
+
     gui.App.on('reopen', function() {
         _self.showSettingsWindow();
     });
@@ -87,6 +89,7 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
             label: lastURL,
             click: function() {
                 _self.copyToClipboard(lastURL);
+                gui.Shell.openExternal(lastURL);
             }
         }));
 
