@@ -7,12 +7,13 @@
     "width": 400,
     "height": 300,
     "focus": true,
-    "show_in_taskbar": true,
-    "show": true
+    "show_in_taskbar": false,
+    "show": false
   },
   "node-remote": "<local>",
   "dependencies": {
     "png-crop": "^0.0.0",
+    "keytar": "^2.0.3",
     "request": "^2.45.0",
     "ssh2": "^0.3.6"
   }

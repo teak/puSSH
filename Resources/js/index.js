@@ -57,7 +57,7 @@ Pussh.prototype.setupTray = function() {
     this.tray = new gui.Tray({
         icon: path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png'),
         alticon: path.join(process.cwd(), 'Resources', 'img', 'menu-alt-icon@2x.png'),
-        iconsAreTemplates: false
+        iconsAreTemplates: true
     });
 
     var nativeMenuBar = new gui.Menu({ type: "menubar" });
@@ -93,6 +93,7 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
             label: lastURL,
             click: function() {
                 _self.copyToClipboard(lastURL);
+                gui.Shell.openExternal(lastURL);
             }
         }));
 
