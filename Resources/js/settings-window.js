@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('settingsWindow', ['schemaForm']);
+var app = angular.module('settingsWindow', []);
 
 app.run(function($rootScope) {
     $rootScope.GUI = require('nw.gui');
