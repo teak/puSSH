@@ -12,8 +12,9 @@
   },
   "node-remote": "<local>",
   "dependencies": {
+    "keytar": "^2.1.0",
+    "nw-gyp": "^0.12.4",
     "png-crop": "^0.0.0",
-    "keytar": "^2.0.3",
     "request": "^2.45.0",
     "ssh2": "^0.3.6"
   }
