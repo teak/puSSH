@@ -10,6 +10,7 @@ var Services = require('./js/services');
 process.on('uncaughtException', function(err) {
     console.log('Caught exception: ', err);
     window.alert('There was an uncaught exception.' + err);
+    gui.Window.get().showDevTools();
 });
 
 function Pussh() {
@@ -207,20 +208,21 @@ Pussh.prototype.windowsCapture = function(needsCrop) {
             }
 
             if (!needsCrop) {
-                _self.upload(fullImg, fullImg);
+                _self.upload(fullImg);
             } else {
                 var cropWindow = gui.Window.open('windows-crop.html', {
                     "toolbar": false,
-                    "width": 100,
-                    "height": 100,
+                    "width": 0,
+                    "height": 0,
                     "x": parseInt(theScreen[4]),
-                    "y": parseInt(theScreen[5])
+                    "y": parseInt(theScreen[5]),
+                    "show": false
                 });
 
-                cropWindow.on('leave-fullscreen', function() {
-                    cropWindow.close(true);
+                cropWindow.on('closed', function() {
                     if (fs.existsSync(cropImg)) {
-                        _self.upload(cropImg, fullImg);
+                        _self.deleteFile(fullImg);
+                        _self.upload(cropImg);
                     }
                 });
             }
@@ -284,7 +286,7 @@ Pussh.prototype.upload = function(file, oldFile) {
 
     this.resize(file, function() {
         _self.services.get(selectedService).upload(file, function(url) {
-            _self.trash(oldFile);
+            if (oldFile) _self.trash(oldFile);
             _self.deleteFile(file);
             _self.copyToClipboard(url);
             
@@ -339,6 +341,7 @@ Pussh.prototype.trash = function(file) {
 
     switch(os.platform()) {
         case 'win32':
+            // this does not work
             trashFolder = path.join(process.env['SystemRoot'], '$Recycle.bin', process.env['SID']);
             break;
         case 'darwin':
