@@ -37,7 +37,7 @@ $(function() {
 
         // flash white
         setTimeout(function() {
-            $('#white').fadeOut(250);
+            $('#white').fadeOut(200);
         }, 50);
     });
 

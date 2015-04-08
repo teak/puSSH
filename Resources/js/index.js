@@ -224,6 +224,10 @@ Pussh.prototype.windowsCapture = function(needsCrop) {
                         _self.upload(cropImg);
                     }
                 });
+
+                cropWindow.on('blur', function() {
+                    cropWindow.close(true);
+                });
             }
         });
 
