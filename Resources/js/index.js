@@ -123,7 +123,6 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
     _self.tray.menu = menu;
 }
 
-// TODO: Watching for screenshots works on OSX, but what about Windows/*nix
 Pussh.prototype.watch = function() {
     var _self = this;
 

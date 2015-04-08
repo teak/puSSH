@@ -1,10 +1,10 @@
 {
-	"sendToTrash": false,
+	"sendToTrash": true,
 	"retinaResize": false,
 	"launchAtStartup": false,
-	"checkForUpdates": false,
+	"checkForUpdates": true,
 	"selectedService": "imgur",
-	"prefixFilenames": "",
+	"prefixFilenames": "s_",
 	"randomizeFilenames": true,
 	"randomizeFilenamesLength": 12,
 	"openBrowser": false,
