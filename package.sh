@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 sudo npm install -g node-gyp nw-gyp n
 npm install
