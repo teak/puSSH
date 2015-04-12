@@ -55,7 +55,10 @@ Settings.prototype.getPassword = function(service) {
 }
 
 Settings.prototype.setPassword = function(service, password) {
-    if(this.keychain.getPassword('pussh', service)) {
+    if (!password || password == '') {
+        this.keychain.deletePassword('pussh', service);
+        return;
+    } else if (this.keychain.getPassword('pussh', service)) {
         this.keychain.replacePassword('pussh', service, password);
     } else {
         this.keychain.addPassword('pussh', service, password);

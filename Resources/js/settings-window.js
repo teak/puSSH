@@ -35,4 +35,10 @@ app.controller('settings', function($scope, $rootScope) {
     $scope.$watch('serviceSettings', function() {
         $scope.selectedService.saveSettings();
     }, true);
+
+    $rootScope.Window.on('close', function() {
+        Pussh.settings.save();
+        $scope.selectedService.saveSettings();
+        $rootScope.Window.close(true);
+    });
 });
