@@ -28,6 +28,7 @@ function Pussh() {
     this.launchAtStartup();
     this.setupTray();
     this.buildTrayMenu(false);
+    this.firstLaunch();
 
     gui.Screen.Init();
 
@@ -36,6 +37,16 @@ function Pussh() {
     gui.App.on('reopen', function() {
         _self.showSettingsWindow();
     });
+}
+
+Pussh.prototype.firstLaunch = function() {
+    var _self = this;
+
+    if (_self.settings.get('lastVersionLaunched') != _self.version) {
+        _self.showSettingsWindow();
+
+        _self.settings.set('lastVersionLaunched', _self.version)
+    }
 }
 
 Pussh.prototype.showSettingsWindow = function() {

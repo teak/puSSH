@@ -21,12 +21,47 @@
   </head>
   <body ng-controller="settings">
     <ul class="nav nav-tabs" role="tablist">
-      <li class="active"><a href="#general" role="tab" data-toggle="tab">General</a></li>
+      <li class="active"><a href="#about" role="tab" data-toggle="tab">About</a></li>
+      <li><a href="#general" role="tab" data-toggle="tab">General</a></li>
       <li><a href="#uploads" role="tab" data-toggle="tab">Uploads</a></li>
       <li><a href="#service" role="tab" data-toggle="tab">{{selectedService.name}}</a></li>
     </ul>
     <div class="tab-content">
-      <div class="tab-pane active" id="general">
+
+      <!-- about -->
+      <div class="tab-pane active" id="about">
+        <h4>Welcome</h4>
+
+        <p>To upload a cropped portion of your screen use the keyboard shortcut: </p>
+        <p ng-switch="Platform">
+          <kbd ng-switch-when="darwin">command + shift + 4</kbd>
+          <kbd ng-switch-when="win32">alt + shift + 4</kbd>
+        </p>
+        <br />
+
+        <p>To upload your entire screen use the shortcut: </p>
+        <p ng-switch="Platform">
+          <kbd ng-switch-when="darwin">command + shift + 3</kbd>
+          <kbd ng-switch-when="win32">alt + shift + 3</kbd>
+        </p>
+        <br />
+
+        <h4>Uploads</h4>
+        <p>
+          Pussh requires an upload service to function. Choose a service on the uploads tab, and configure it on the service tab. If you are unsure which to use, try out Imgur.
+          Imgur is free, requires no setup, and is the default upload service. Use the keyboard shortcut now to see Pussh in action!
+        </p>
+        <br />
+
+        <h4>New In This Version</h4>
+        <ul>
+          <li>Support for that "operating system" called Microsoft Windows</li>
+          <li>Stability improvements and bug fixes</li>
+        </ul>
+      </div>
+
+      <!-- general -->
+      <div class="tab-pane" id="general">
         <form class="form-horizontal" role="form">
           <div class="form-group">
             <div class="col-sm-10">
@@ -49,6 +84,8 @@
           </div>
         </form>
       </div>
+
+      <!-- uploads -->
       <div class="tab-pane" id="uploads">
         <form class="form-horizontal" role="form">
           <div class="form-group">
@@ -67,7 +104,7 @@
           <hr>
           <div class="form-group">
             <label class="col-sm-3 control-label">Other Settings</label>
-            <div class="col-sm-9">
+            <div class="col-sm-9" ng-if="Platform == 'darwin'">
               <div class="checkbox">
                 <label>
                   <input type="checkbox" ng-model="settings.retinaResize"> Automatically Scale High DPI Screenshots
@@ -130,6 +167,8 @@
           </div>
         </form>
       </div>
+
+      <!-- service -->
       <div class="tab-pane" id="service">
         <form class="form-horizontal" role="form">
           <div class="form-group" ng-repeat="setting in serviceSettings">

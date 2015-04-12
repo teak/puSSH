@@ -3,6 +3,7 @@
 var app = angular.module('settingsWindow', []);
 
 app.run(function($rootScope) {
+    $rootScope.Platform = require('os').platform();
     $rootScope.GUI = require('nw.gui');
     $rootScope.AppName = $rootScope.GUI.App.manifest.name;
     $rootScope.Version = $rootScope.GUI.App.manifest.version;
