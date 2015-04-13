@@ -3,6 +3,7 @@ var fs = require('fs');
 var gui = require('nw.gui');
 var os = require('os');
 var path = require('path');
+var request = require("request");
 
 var Settings = require('./js/settings');
 var Services = require('./js/services');
@@ -29,6 +30,7 @@ function Pussh() {
     this.setupTray();
     this.buildTrayMenu(false);
     this.firstLaunch();
+    this.checkUpdates();
 
     gui.Screen.Init();
 
@@ -49,6 +51,28 @@ Pussh.prototype.firstLaunch = function() {
     }
 }
 
+Pussh.prototype.checkUpdates = function() {
+    var _self = this;
+
+    if (!_self.settings.get('checkForUpdates')) return;
+
+    request('http://pussh.me/dl/pussh.json', function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            var data = JSON.parse(body);
+
+            if (!data.version) return;
+
+            if (_self.version != data.version) {
+
+                var msg = 'Pussh has an availible update. Click "OK" to open the Pussh download page...';
+                if (confirm(msg)) {
+                    gui.Shell.openExternal('http://pussh.me/');
+                }
+            }
+        }
+    });
+}
+
 Pussh.prototype.showSettingsWindow = function() {
     var _self = this;
 
@@ -58,8 +82,8 @@ Pussh.prototype.showSettingsWindow = function() {
         _self._settingsWindow = gui.Window.open('settings-window.html', {
             "focus": true,
             "toolbar": false,
-            "width": 800,
-            "height": 500
+            "width": 900,
+            "height": 550
         });
     }
 }
