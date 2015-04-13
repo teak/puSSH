@@ -3,7 +3,7 @@ var fs = require('fs');
 var gui = require('nw.gui');
 var os = require('os');
 var path = require('path');
-var request = require("request");
+var request = require('request');
 
 var Settings = require('./js/settings');
 var Services = require('./js/services');
@@ -64,7 +64,7 @@ Pussh.prototype.checkUpdates = function() {
 
             if (_self.version != data.version) {
 
-                var msg = 'Pussh has an availible update. Click "OK" to open the Pussh download page...';
+                var msg = 'Pussh has an available update. Click "OK" to open the Pussh download page...';
                 if (confirm(msg)) {
                     gui.Shell.openExternal('http://pussh.me/');
                 }
