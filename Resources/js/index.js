@@ -140,13 +140,14 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
         }));
     }
 
-    if (this.platform == 'darwin') {
+    if (this.platform === 'darwin') {
 
         // Take a cropped screenshot
         menu.append(new gui.MenuItem({
             label: 'Cropped Capture',
             click: function() {
-                exec('osascript -e \'tell application "System Events" to keystroke "$" using {command down, shift down}\'');
+                if (this.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "$" using {command down, shift down}\'');
+                if (this.platform === 'win32') _self.windowsCapture(true);
             }
         }));
 
@@ -154,7 +155,8 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
         menu.append(new gui.MenuItem({
             label: 'Screen Capture',
             click: function() {
-                exec('osascript -e \'tell application "System Events" to keystroke "#" using {command down, shift down}\'');
+                if (this.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "#" using {command down, shift down}\'');
+                if (this.platform === 'win32') _self.windowsCapture(false);
             }
         }));
     }
