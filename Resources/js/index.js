@@ -140,26 +140,24 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
         }));
     }
 
-    if (this.platform === 'darwin') {
+    // Take a cropped screenshot
+    menu.append(new gui.MenuItem({
+        label: 'Cropped Capture',
+        click: function() {
+            if (this.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "$" using {command down, shift down}\'');
+            if (this.platform === 'win32') _self.windowsCapture(true);
+        }
+    }));
 
-        // Take a cropped screenshot
-        menu.append(new gui.MenuItem({
-            label: 'Cropped Capture',
-            click: function() {
-                if (this.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "$" using {command down, shift down}\'');
-                if (this.platform === 'win32') _self.windowsCapture(true);
-            }
-        }));
-
-        // Take a fullscreen screenshot
-        menu.append(new gui.MenuItem({
-            label: 'Screen Capture',
-            click: function() {
-                if (this.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "#" using {command down, shift down}\'');
-                if (this.platform === 'win32') _self.windowsCapture(false);
-            }
-        }));
-    }
+    // Take a fullscreen screenshot
+    menu.append(new gui.MenuItem({
+        label: 'Screen Capture',
+        click: function() {
+            if (this.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "#" using {command down, shift down}\'');
+            if (this.platform === 'win32') _self.windowsCapture(false);
+        }
+    }));
+        
     // open settings
     menu.append(new gui.MenuItem({
         label: 'Settings',
