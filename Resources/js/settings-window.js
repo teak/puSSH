@@ -3,6 +3,7 @@
 var app = angular.module('settingsWindow', []);
 
 app.run(function($rootScope) {
+    $rootScope.Platform = require('os').platform();
     $rootScope.GUI = require('nw.gui');
     $rootScope.AppName = $rootScope.GUI.App.manifest.name;
     $rootScope.Version = $rootScope.GUI.App.manifest.version;
@@ -34,4 +35,10 @@ app.controller('settings', function($scope, $rootScope) {
     $scope.$watch('serviceSettings', function() {
         $scope.selectedService.saveSettings();
     }, true);
+
+    $rootScope.Window.on('close', function() {
+        Pussh.settings.save();
+        $scope.selectedService.saveSettings();
+        $rootScope.Window.close(true);
+    });
 });

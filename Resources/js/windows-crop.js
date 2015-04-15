@@ -6,12 +6,6 @@ var fs = require('fs');
 var PNGCrop = require('png-crop');
 
 $(function() {
-    var cropWindow = gui.Window.get();
-
-    cropWindow.setShowInTaskbar(false);
-    cropWindow.enterFullscreen();
-    cropWindow.focus();
-
     // setup files
     var basePath;
     switch(os.platform()) {
@@ -32,6 +26,24 @@ $(function() {
 
     // load the img preview
     $('#img').attr('src', fullImg);
+    $('#img').load(function() {
+
+        var cropWindow = gui.Window.get();
+        cropWindow.enterFullscreen();
+        cropWindow.focus();
+
+        // flash white
+        setTimeout(function() {
+            $('#white').fadeOut(200);
+        }, 100);
+    });
+
+    // close on esc key
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27) {
+            closeWindow();
+        }
+    });
 
     var dragging = false;
     var mouseLoc = {x: 0, y: 0};
@@ -108,19 +120,21 @@ $(function() {
         });
 
         // dont upload if the crop is 0
-        if (dragSize.x == 0 && dragSize.y == 0) {
-            cropWindow.leaveFullscreen();
-            cropWindow.close();
+        if (dragSize.x <= 1 && dragSize.y <= 1) {
+            closeWindow();
         } else {
             var left = dragEnd.x > dragStart.x ? dragStart.x : dragEnd.x;
             var top = dragEnd.y > dragStart.y ? dragStart.y : dragEnd.y;
 
-            // crop and save img. main script looks for the cropped file on cropWindow closed
+            // crop and save img. main script looks for the cropped file on window closed
             PNGCrop.crop(fullImg, cropImg, {width: dragSize.x, height: dragSize.y, top: top, left: left}, function(err) {
-                cropWindow.leaveFullscreen();
-                cropWindow.close();
+                closeWindow();
             });
         }
     });
 
 });
+
+function closeWindow() {
+    gui.Window.get().close(true);
+}

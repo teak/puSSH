@@ -1,4 +1,5 @@
 var path = require('path');
+var slash = require('slash');
 var ssh = require('ssh2');
 var util = require('util');
 
@@ -47,7 +48,7 @@ function Service(main) {
         },
         {
             name: 'Password',
-            key: 'password',
+            key: 'sftp_password',
             type: 'password',
             password: true,
             default: '',
@@ -55,7 +56,7 @@ function Service(main) {
         },
         {
             name: 'Private Key',
-            key: 'private_key',
+            key: 'sftp_private_key',
             type: 'textarea',
             password: true,
             default: '',
@@ -95,7 +96,7 @@ Service.prototype.upload = function(file, callback) {
 
             var fileName = path.basename(file);
 
-            sftp.fastPut(file, path.join(_self.getSetting('path'), fileName), function(err) {
+            sftp.fastPut(file, slash(path.join(_self.getSetting('path'), fileName)), function(err) {
                 if(err) {
                     conn.end();
                     window.alert('Error uploading to server');
@@ -115,9 +116,9 @@ Service.prototype.upload = function(file, callback) {
         host: this.getSetting('hostname'),
         port: this.getSetting('port'),
         username: this.getSetting('username'),
-        password: !this.getPassword('private_key') ? this.getPassword('password') : undefined,
-        passphrase: this.getPassword('private_key') ? this.getPassword('password') : undefined,
-        privateKey: this.getPassword('private_key') || undefined
+        password: !this.getPassword('sftp_private_key') ? this.getPassword('sftp_password') : undefined,
+        passphrase: this.getPassword('sftp_private_key') ? this.getPassword('sftp_password') : undefined,
+        privateKey: this.getPassword('sftp_private_key') || undefined
     });
 }
 
