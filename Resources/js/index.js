@@ -90,18 +90,20 @@ Pussh.prototype.showSettingsWindow = function() {
 }
 
 Pussh.prototype.setupTray = function() {
+    var _self = this;
+    
     // create status item
-    this.tray = new gui.Tray({
+    _self.tray = new gui.Tray({
         icon: path.join(process.cwd(), 'Resources', 'img', 'menu-icon@2x.png'),
         alticon: path.join(process.cwd(), 'Resources', 'img', 'menu-alt-icon@2x.png'),
         iconsAreTemplates: true
     });
 
     var nativeMenuBar = new gui.Menu({ type: "menubar" });
-    if (this.platform === 'darwin') {
-        nativeMenuBar.createMacBuiltin(this.name);
+    if (_self.platform === 'darwin') {
+        nativeMenuBar.createMacBuiltin(_self.name);
     }
-    this.window.menu = nativeMenuBar;
+    _self.window.menu = nativeMenuBar;
 }
 
 Pussh.prototype.setTrayState = function(state) {
@@ -144,8 +146,8 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
     menu.append(new gui.MenuItem({
         label: 'Cropped Capture',
         click: function() {
-            if (this.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "$" using {command down, shift down}\'');
-            if (this.platform === 'win32') _self.windowsCapture(true);
+            if (_self.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "$" using {command down, shift down}\'');
+            if (_self.platform === 'win32') _self.windowsCapture(true);
         }
     }));
 
@@ -153,9 +155,14 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
     menu.append(new gui.MenuItem({
         label: 'Screen Capture',
         click: function() {
-            if (this.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "#" using {command down, shift down}\'');
-            if (this.platform === 'win32') _self.windowsCapture(false);
+            if (_self.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "#" using {command down, shift down}\'');
+            if (_self.platform === 'win32') _self.windowsCapture(false);
         }
+    }));
+
+    // add a separator
+    menu.append(new gui.MenuItem({
+        type: 'separator'
     }));
         
     // open settings
@@ -180,7 +187,7 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
 Pussh.prototype.watch = function() {
     var _self = this;
 
-    if (this.platform == 'darwin') {
+    if (_self.platform == 'darwin') {
         var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
         var checkedFiles = [];
@@ -219,7 +226,7 @@ Pussh.prototype.watch = function() {
                 }
             });
         }, 1000);
-    } else if (this.platform == 'win32') {
+    } else if (_self.platform == 'win32') {
         var windowsFullScreenshot = new gui.Shortcut({
             key: "Alt+Shift+3",
             active: function() {
@@ -242,7 +249,7 @@ Pussh.prototype.watch = function() {
 Pussh.prototype.windowsCapture = function(needsCrop) {
     var _self = this;
 
-    if (this.platform == 'win32') {
+    if (_self.platform == 'win32') {
 
         // setup files
         var basePath = process.env['TEMP'];
@@ -287,8 +294,10 @@ Pussh.prototype.windowsCapture = function(needsCrop) {
 }
 
 Pussh.prototype.launchAtStartup = function() {
-    if(this.settings.get('launchAtStartup') === true) {
-        switch(this.platform) {
+    var _self = this;
+
+    if(_self.settings.get('launchAtStartup') === true) {
+        switch(_self.platform) {
             case 'win32':
                 // TODO
                 break;
@@ -303,12 +312,12 @@ Pussh.prototype.launchAtStartup = function() {
                 return;
         }
     } else {
-        switch(this.platform) {
+        switch(_self.platform) {
             case 'win32':
                 // TODO
                 break;
             case 'darwin':
-                exec('osascript -e \'tell application "System Events" to delete login item "'+this.name+'"\'');
+                exec('osascript -e \'tell application "System Events" to delete login item "'+_self.name+'"\'');
                 break;
             case 'linux':
                 // TODO
@@ -366,9 +375,11 @@ Pussh.prototype.upload = function(file, oldFile) {
 }
 
 Pussh.prototype.moveToTemp = function(file) {
+    var _self = this;
+
     var tmpFile;
 
-    switch(this.platform) {
+    switch(_self.platform) {
         case 'win32':
             tmpFile = path.join(process.env['TEMP'], path.basename(file));
             break;
