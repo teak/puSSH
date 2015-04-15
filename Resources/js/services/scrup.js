@@ -43,7 +43,7 @@ Service.prototype.upload = function(filepath, callback) {
             return;
         }
 
-        if (response.statusCode != 200) {
+        if (response.statusCode < 200 || response.statusCode >= 300) {
             window.alert('error: server returned status code ' + response.statusCode);
             return;
         }
