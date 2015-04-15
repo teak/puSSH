@@ -16,6 +16,7 @@ process.on('uncaughtException', function(err) {
 
 function Pussh() {
     this.settings = new Settings();
+    this.platform = os.platform();
     this.name = gui.App.manifest.name;
     this.version = gui.App.manifest.version;
     this.window = gui.Window.get();
@@ -97,7 +98,7 @@ Pussh.prototype.setupTray = function() {
     });
 
     var nativeMenuBar = new gui.Menu({ type: "menubar" });
-    if (os.platform() === 'darwin') {
+    if (this.platform === 'darwin') {
         nativeMenuBar.createMacBuiltin(this.name);
     }
     this.window.menu = nativeMenuBar;
@@ -139,6 +140,24 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
         }));
     }
 
+    // Take a cropped screenshot
+    menu.append(new gui.MenuItem({
+        label: 'Cropped Capture',
+        click: function() {
+            if (this.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "$" using {command down, shift down}\'');
+            if (this.platform === 'win32') _self.windowsCapture(true);
+        }
+    }));
+
+    // Take a fullscreen screenshot
+    menu.append(new gui.MenuItem({
+        label: 'Screen Capture',
+        click: function() {
+            if (this.platform === 'darwin') exec('osascript -e \'tell application "System Events" to keystroke "#" using {command down, shift down}\'');
+            if (this.platform === 'win32') _self.windowsCapture(false);
+        }
+    }));
+        
     // open settings
     menu.append(new gui.MenuItem({
         label: 'Settings',
@@ -161,9 +180,7 @@ Pussh.prototype.buildTrayMenu = function(lastURL) {
 Pussh.prototype.watch = function() {
     var _self = this;
 
-    var platform = os.platform();
-
-    if (platform == 'darwin') {
+    if (this.platform == 'darwin') {
         var desktopFolder = path.join(process.env['HOME'], 'Desktop');
 
         var checkedFiles = [];
@@ -202,7 +219,7 @@ Pussh.prototype.watch = function() {
                 }
             });
         }, 1000);
-    } else if (platform == 'win32') {
+    } else if (this.platform == 'win32') {
         var windowsFullScreenshot = new gui.Shortcut({
             key: "Alt+Shift+3",
             active: function() {
@@ -225,7 +242,7 @@ Pussh.prototype.watch = function() {
 Pussh.prototype.windowsCapture = function(needsCrop) {
     var _self = this;
 
-    if (os.platform() == 'win32') {
+    if (this.platform == 'win32') {
 
         // setup files
         var basePath = process.env['TEMP'];
@@ -271,7 +288,7 @@ Pussh.prototype.windowsCapture = function(needsCrop) {
 
 Pussh.prototype.launchAtStartup = function() {
     if(this.settings.get('launchAtStartup') === true) {
-        switch(os.platform()) {
+        switch(this.platform) {
             case 'win32':
                 // TODO
                 break;
@@ -286,7 +303,7 @@ Pussh.prototype.launchAtStartup = function() {
                 return;
         }
     } else {
-        switch(os.platform()) {
+        switch(this.platform) {
             case 'win32':
                 // TODO
                 break;
@@ -315,7 +332,7 @@ Pussh.prototype.upload = function(file, oldFile) {
     if(_self.settings.get('enableNotifications')) {
         new window.Notification('Pussh', {
             body: 'Pussh has initiated a screenshot upload.',
-            icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined
+            icon: _self.platform !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined
         });
     }
 
@@ -351,7 +368,7 @@ Pussh.prototype.upload = function(file, oldFile) {
 Pussh.prototype.moveToTemp = function(file) {
     var tmpFile;
 
-    switch(os.platform()) {
+    switch(this.platform) {
         case 'win32':
             tmpFile = path.join(process.env['TEMP'], path.basename(file));
             break;
@@ -377,7 +394,7 @@ Pussh.prototype.trash = function(file) {
 
     var trashFolder;
 
-    switch(os.platform()) {
+    switch(_self.platform) {
         case 'win32':
             // this does not work
             trashFolder = path.join(process.env['SystemRoot'], '$Recycle.bin', process.env['SID']);
@@ -431,7 +448,7 @@ Pussh.prototype.prefixFilename = function(file) {
 Pussh.prototype.resize = function(file, callback) {
     var _self = this;
 
-    if(os.platform() !== 'darwin' || _self.settings.get('retinaResize') === false) return callback();
+    if(_self.platform !== 'darwin' || _self.settings.get('retinaResize') === false) return callback();
 
     exec('/usr/bin/sips -g dpiWidth -g pixelWidth "'+file+'"', function(error, stdout) {
         if(error) return callback();
@@ -461,7 +478,7 @@ Pussh.prototype.copyToClipboard = function(url) {
     if (_self.settings.get('enableNotifications')) {
         var notification = new window.Notification('Pussh', {
             body: 'The screenshot URL has been copied to your clipboard.',
-            icon: os.platform() !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined
+            icon: _self.platform !== 'darwin' ? path.join(process.cwd(), 'Resources', 'img', 'icon.png') : undefined
         });
 
         notification.addEventListener('click', function() {
