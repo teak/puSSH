@@ -1,0 +1,41 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:700,300,400);
+@import url(http://fonts.googleapis.com/css?family=Raleway:200);
+
+body {
+    background: #fff;
+    padding: 0px;
+
+    font-family: "Open Sans", sans-serif;
+}
+
+h1, h2, h3, h4 {
+    font-family: "Raleway", sans-serif;
+    font-weight: lighter;
+}
+
+.main-jumbotron {
+    background-color: #333;
+    background: url('../img/back.jpg') no-repeat center 20%;
+    background-size: 100% auto;
+
+    color: #eee;
+
+    height: 320px;
+    border-radius: 0 !important;
+    text-align: center;
+
+    overflow: hidden;
+}
+
+.main-icon {
+    width: 240px;
+}
+
+.main-title {
+    padding: 42px;
+    text-align: left;
+}
+
+.footer {
+    padding-bottom: 100px;
+}
