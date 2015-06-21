@@ -25,7 +25,7 @@ $(function() {
     var cropImg = path.join(basePath, 'pussh_screen_crop.png');
 
     // load the img preview
-    $('#img').attr('src', fullImg);
+    $('#img').attr('src', fullImg + '?c=' + new Date().getTime());
     $('#img').load(function() {
 
         var cropWindow = gui.Window.get();
