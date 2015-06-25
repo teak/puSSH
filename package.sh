@@ -17,8 +17,8 @@ cd $cwd
 
 mkdir -p output && cd output
 curl -vvv $dl -o nw.zip
-rm -R Pussh.app
-unzip nw.zip && mv nwjs-*/nwjs.app Pussh.app && rm -R nwjs-*
+rm -rf Pussh.app
+unzip nw.zip && mv nwjs-*/nwjs.app Pussh.app && rm -r nwjs-*
 
 cd $cwd
 zip --exclude=output* -x=.git* -r output/app.nw .
@@ -34,5 +34,5 @@ cp ../Resources/img/icon.icns Pussh.app/Contents/Resources/nw.icns
 /usr/libexec/PlistBuddy -c "Set :UTExportedTypeDeclarations:0:UTTypeIdentifier com.nightdev.pussh.app" Pussh.app/Contents/Info.plist
 /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $version" Pussh.app/Contents/Info.plist
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $version" Pussh.app/Contents/Info.plist
-rm app.nw
-rm nw.zip
+rm -f app.nw
+rm -f nw.zip
