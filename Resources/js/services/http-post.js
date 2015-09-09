@@ -37,6 +37,12 @@ function Service(main) {
             password: false,
             default: '',
             helpText: 'The remote URL for your screenshots'
+        },
+        {
+            name: 'Append File Extension',
+            key: 'appendExtension',
+            type: 'checkbox',
+            helpText: 'Remove the image extension from the URL. E.g. example.org/image.png -> example.org/image'
         }
     ];
 
@@ -69,7 +75,7 @@ Service.prototype.upload = function(filepath, callback) {
             return;
         }
 
-        var fileName = path.basename(filepath);
+        var fileName = _self.getSetting("appendExtension") ? path.basename(filepath) : path.basename(filepath).split(".")[0];
         callback(_self.getSetting('url') + encodeURIComponent(fileName));
     });
 }
