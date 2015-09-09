@@ -177,6 +177,7 @@
               <input ng-if="setting.type === 'text'" type="text" class="form-control" ng-model="setting.value">
               <textarea ng-if="setting.type === 'textarea'" class="form-control" ng-model="setting.value"></textarea>
               <input ng-if="setting.type === 'password'" type="password" class="form-control" ng-model="setting.value">
+              <input ng-if="setting.type === 'checkbox'" type="checkbox" class="checkbox-inline" ng-model="setting.value">
               <p class="help-block" ng-bind="setting.helpText"></p>
             </div>
             <hr>
