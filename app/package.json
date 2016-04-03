@@ -1,0 +1,18 @@
+{
+  "name": "Pussh",
+  "version": "0.0.2",
+  "main": "js/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "auto-launch": "^1.1.1",
+    "jimp": "^0.2.20",
+    "request": "^2.45.0",
+    "slash": "^1.0.0",
+    "ssh2": "^0.3.6"
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^0.36.0"
+  }
+}

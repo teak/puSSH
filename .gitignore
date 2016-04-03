@@ -1,4 +1,1 @@
-nwjs.app
-node_modules
-build
-output
+app/node_modules
