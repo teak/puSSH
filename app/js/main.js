@@ -343,14 +343,27 @@ Pussh.prototype.windowsCapture = function(needsCrop) {
             if (!needsCrop) {
                 _self.upload(fullImg);
             } else {
+                
+                var width = parseInt(theScreen[2]);
+                var height = parseInt(theScreen[3]);
+                var left = parseInt(theScreen[0]);
+                var top = parseInt(theScreen[1]);
+                var scale = 0.9;
+
+                left = left + ((width - (width * scale)) / 2);
+                top = top + ((height - (height * scale)) / 2);
+                width = width * scale;
+                height = height * scale;
+
                 _self.cropWindow = new BrowserWindow({
-                    'width': parseInt(theScreen[2]),
-                    'height': parseInt(theScreen[3]),
-                    'x': parseInt(theScreen[0]),
-                    'y': parseInt(theScreen[1]),
+                    'width': width,
+                    'height': height,
+                    'x': left,
+                    'y': top,
                     'show': false,
                     'skip-taskbar': true,
-                    'frame': false
+                    'frame': false,
+                    "auto-hide-menu-bar": true
                 });
 
                 _self.cropWindow.on('closed', function() {

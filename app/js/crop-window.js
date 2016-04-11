@@ -17,7 +17,7 @@ $(function() {
     // load the img preview
     $('#img').attr('src', fullImg + '?c=' + new Date().getTime());
     $('#img').load(function() {
-        cropWindow.setFullScreen(true); // fullscreen is buggy :/
+        //cropWindow.setFullScreen(true); // fullscreen is buggy :/
         cropWindow.show();
         cropWindow.focus();
 
@@ -39,13 +39,21 @@ $(function() {
     var dragStart = {x: 0, y: 0};
     var dragSize = {x: 0, y: 0};
     var dragEnd = {x: 0, y: 0};
+    var scale = {x: 1, y: 1};
 
     // update mouse location
     $(window).on('mousemove', function(e) {
         mouseLoc.x = e.clientX;
         mouseLoc.y = e.clientY;
 
-        console.log($('#img')[0].naturalWidth);
+        if (mouseLoc.x > $(document).width()) mouseLoc.x = $(document).width();
+        if (mouseLoc.y > $(document).height()) mouseLoc.y = $(document).height();
+
+        if (mouseLoc.x < 0) mouseLoc.x = 0;
+        if (mouseLoc.y < 0) mouseLoc.y = 0;
+
+        scale.x = $('#img')[0].naturalWidth / $('#img').width();
+        scale.y = $('#img')[0].naturalHeight / $('#img').height();
 
         $('#cords').css({
             "top": mouseLoc.y,
@@ -68,9 +76,9 @@ $(function() {
                 "width": dragSize.x
             });
 
-            $('#cords').html(dragSize.x + '<br />' + dragSize.y);
+            $('#cords').html(Math.round(dragSize.x * scale.x) + '<br />' + Math.round(dragSize.y * scale.y));
         } else {
-            $('#cords').html(mouseLoc.x + '<br />' + mouseLoc.y);
+            $('#cords').html(Math.round(mouseLoc.x * scale.x) + '<br />' + Math.round(mouseLoc.y * scale.y));
         }
     });
 
@@ -101,6 +109,7 @@ $(function() {
 
         dragEnd.x = mouseLoc.x + 1;
         dragEnd.y = mouseLoc.y + 1;
+
         dragSize.x = Math.abs(mouseLoc.x - dragStart.x) + 1;
         dragSize.y = Math.abs(mouseLoc.y - dragStart.y) + 1;
 
@@ -116,12 +125,17 @@ $(function() {
         } else {
             var left = dragEnd.x > dragStart.x ? dragStart.x : dragEnd.x;
             var top = dragEnd.y > dragStart.y ? dragStart.y : dragEnd.y;
+            left = left * scale.x;
+            top = top * scale.y;
+
+            var width = dragSize.x * scale.x;
+            var height = dragSize.y * scale.y;
 
             // crop and save img. main script looks for the cropped file on window closed
             Jimp.read(fullImg, function(error, image) {
                 if (error) return;
 
-                image.crop(left, top, dragSize.x, dragSize.y);
+                image.crop(left, top, width, height);
 
                 image.write(cropImg, function() {
                     cropWindow.destroy();
