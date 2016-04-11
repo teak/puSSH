@@ -361,7 +361,7 @@ Pussh.prototype.windowsCapture = function(needsCrop) {
                     }
                 });
 
-                _self.cropWindow.loadURL('file://' + path.join(app.getAppPath(), 'windows-crop.html'));
+                _self.cropWindow.loadURL('file://' + path.join(app.getAppPath(), 'crop-window.html'));
             }
         });
 
