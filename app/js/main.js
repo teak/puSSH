@@ -23,6 +23,8 @@ const shell = electron.shell;
 const ipc = electron.ipcMain;
 const dialog = electron.dialog;
 
+const electronDebug = require('electron-debug')();
+
 const Settings = require('./settings');
 const Services = require('./services');
 
@@ -133,7 +135,7 @@ class Pussh {
     showEditorWindow() {
         if (!this.editorWindow) {
             this.editorWindow = new BrowserWindow({
-                show: false,
+                //show: false,
                 width: 900,
                 height: 600,
                 minWidth: 900,
@@ -142,7 +144,8 @@ class Pussh {
                 'auto-hide-menu-bar': true
             });
             this.editorWindow.on('closed', () => this.editorWindow = null);
-            this.editorWindow.webContents.on('did-finish-load', () => this.editorWindow.show());
+            this.editorWindow.show
+            //this.editorWindow.webContents.on('did-finish-load', () => this.editorWindow.show());
         }
 
         this.editorWindow.loadURL(`file://${path.join(app.getAppPath(), `editor-window.html?lastURL=${encodeURIComponent(this.lastURLs[0])}`)}`);
