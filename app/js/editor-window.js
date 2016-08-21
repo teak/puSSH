@@ -1,26 +1,28 @@
-var remote = require('electron').remote;
-var app = remote.app;
-var dialog = remote.dialog;
-var clipboard = remote.clipboard;
-var exec = require('child_process').exec;
-var fs = require('fs');
-var os = require('os');
-var path = require('path');
-var Jimp = require('jimp');
+const remote = require('electron').remote;
+const app = remote.app;
+const dialog = remote.dialog;
+const clipboard = remote.clipboard;
 
-$(function() {
-    var imageURL = decodeURIComponent(window.location.href.split('?lastURL=')[1]);
-    var platform = os.platform();
-    var isVector = false;
+const execFile = require('child_process').execFile;
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+const Jimp = require('jimp');
+
+$(() => {
+    const imageURL = decodeURIComponent(window.location.href.split('?lastURL=')[1]);
+    const platform = os.platform();
+    let isVector = false;
 
     $('.img').attr('src', imageURL);
 
-    $('.save').on('click', function() {
+    $('.save').on('click', () => {
         if (isVector) {
-            var savePath = dialog.showSaveDialog({
-                filters: [
-                    {name: 'Images', extensions: ['svg']}
-                ]
+            const savePath = dialog.showSaveDialog({
+                filters: [{
+                    name: 'Images', extensions: ['svg']
+                }]
             });
 
             if (savePath) {
@@ -31,13 +33,13 @@ $(function() {
         }
     });
 
-    $('.vector').on('click', function() {
-
-        Jimp.read(imageURL, function(error, image) {
+    $('.vector').on('click', () => {
+        Jimp.read(imageURL, (error, image) => {
             if (error) return;
 
-            var imgPath = path.join(app.getPath('temp'), 'potrace.bmp');
-            var binPath;
+            const imgPath = path.join(app.getPath('temp'), 'potrace.bmp');
+
+            let binPath;
             if (platform == 'darwin') {
                 binPath = path.join(app.getAppPath(), 'bin', 'osx', 'potrace');
             } else if (platform == 'win32') {
@@ -46,18 +48,17 @@ $(function() {
                 return;
             }
 
-            image.write(imgPath, function() {
-                exec(binPath + ' -s -n ' + imgPath, function(error, stdout) {
+            image.write(imgPath, () => {
+                execFile(binPath, ['-s', '-n', imgPath], (error, stdout) => {
                     if (error) return;
 
                     isVector = true;
                     $('.img').attr('src', path.join(app.getPath('temp'), 'potrace.svg'));
 
-                    //console.log(clipboard.availableFormats());
-                    //clipboard.writeHtml(fs.readFileSync(path.join(app.getPath('temp'), 'potrace.svg')), 'text/svg');
+                    // console.log(clipboard.availableFormats());
+                    // clipboard.writeHtml(fs.readFileSync(path.join(app.getPath('temp'), 'potrace.svg')), 'text/svg');
                 });
             });
         });
-
     });
 });
