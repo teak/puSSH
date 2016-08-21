@@ -314,10 +314,10 @@ class Pussh {
             let left = parseInt(output[0]);
             let top = parseInt(output[1]);
 
-            width = width * scale;
-            height = height * scale;
             left = left + ((width - (width * scale)) / 2);
             top = top + ((height - (height * scale)) / 2);
+            width = width * scale;
+            height = height * scale;
 
             this.cropWindow = new BrowserWindow({
                 width: width,
