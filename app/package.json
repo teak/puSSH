@@ -8,6 +8,7 @@
   "version": "0.0.2",
   "main": "js/main.js",
   "dependencies": {
+    "async": "^2.0.1",
     "auto-launch": "^3.0.0",
     "jimp": "^0.2.27",
     "keytar": "^3.0.2",
