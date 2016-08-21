@@ -91,6 +91,7 @@ class Pussh {
         if (this.settings.get('lastVersionLaunched') === this.version) return;
         this.showSettingsWindow();
         this.settings.set('lastVersionLaunched', this.version);
+        this.settings.save();
     }
 
     checkUpdates() {
