@@ -1,3 +1,6 @@
+// windows start menu add/delete /w squirrel install/uninstall
+if(require('electron-squirrel-startup')) return;
+
 const os = require('os');
 const path = require('path');
 const fs = require('fs');

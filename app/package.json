@@ -2,7 +2,7 @@
   "name": "Pussh",
   "description": "The cross platform, multi-functional screenshot utility that doesn't suck.",
   "author": {
-    "name": "Pussh Dev Team",
+    "name": "Pussh",
     "url": "https://github.com/teak/Pussh"
   },
   "version": "0.0.2",
@@ -10,6 +10,7 @@
   "dependencies": {
     "async": "^2.0.1",
     "auto-launch": "^3.0.0",
+    "electron-squirrel-startup": "^1.0.0",
     "jimp": "^0.2.27",
     "keytar": "^3.0.2",
     "request": "^2.74.0",
