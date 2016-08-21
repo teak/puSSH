@@ -17,7 +17,7 @@ $(() => {
     // load the img preview
     $('#img').attr('src', fullImg + '?c=' + new Date().getTime());
     $('#img').load(() => {
-        cropWindow.setFullScreen(true);
+        //cropWindow.setFullScreen(true);
         cropWindow.show();
         cropWindow.focus();
 
