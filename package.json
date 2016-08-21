@@ -17,5 +17,8 @@
     "win": {
       "iconUrl": "https://github.com/teak/Pussh/tree/electron-dev/build/icon.ico?raw=true"
     }
+  },
+  "dependencies": {
+    "lodash.debounce": "^4.0.8"
   }
 }

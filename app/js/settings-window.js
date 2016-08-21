@@ -4,20 +4,7 @@ const app = angular.module('settingsWindow', []);
 
 const remote = require('electron').remote;
 
-const debounce = (func, wait, immediate) => {
-    let timeout;
-    return () => {
-        const context = this, args = arguments;
-        const later = () => {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        const callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-};
+const debounce = require('lodash.debounce');
 
 app.run($rootScope => {
     $rootScope.Platform = require('os').platform();
@@ -61,5 +48,8 @@ app.controller('settings', ($scope, $rootScope) => {
     $scope.save = debounce(() => {
         $scope.selectedService.saveSettings();
         Pussh.settings.save();
-    }, 1000);
+    }, 1000, {
+        leading: true,
+        trailing: true
+    });
 });
