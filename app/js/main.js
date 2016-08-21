@@ -308,7 +308,10 @@ class Pussh {
             }
 
             const allScreens = electron.screen.getAllDisplays();
-            allScreens.forEach(s => {s.bounds.maxX = s.bounds.x + s.bounds.width; s.bounds.maxY = s.bounds.y + s.bounds.height; });
+            allScreens.forEach(s => {
+                s.bounds.maxX = s.bounds.x + s.bounds.width;
+                s.bounds.maxY = s.bounds.y + s.bounds.height;
+            });
             const minX = allScreens.reduce((pv, cv) => pv < cv.bounds.x ? pv : cv.bounds.x, 0);
             const minY = allScreens.reduce((pv, cv) => pv < cv.bounds.y ? pv : cv.bounds.y, 0);
             const maxWidth = allScreens.reduce((pv, cv) => pv <= cv.bounds.maxX ? cv.bounds.maxX : pv, 0) + Math.abs(minX);
