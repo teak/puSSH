@@ -121,6 +121,7 @@ class Pussh {
             'skip-taskbar': true,
             'auto-hide-menu-bar': true
         });
+        this.settingsWindow.setMenu(null);
         this.settingsWindow.loadURL(`file://${path.join(app.getAppPath(), 'settings-window.html')}`);
         this.settingsWindow.on('closed', () => this.settingsWindow = null);
         this.settingsWindow.webContents.on('did-finish-load', () => this.settingsWindow.show());
