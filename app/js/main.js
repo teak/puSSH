@@ -307,30 +307,26 @@ class Pussh {
                 return;
             }
 
-            const output = stdout.split(',');
-            const scale = 1;
-            let width = parseInt(output[2]);
-            let height = parseInt(output[3]);
-            let left = parseInt(output[0]);
-            let top = parseInt(output[1]);
-
-            left = left + ((width - (width * scale)) / 2);
-            top = top + ((height - (height * scale)) / 2);
-            width = width * scale;
-            height = height * scale;
+            const allScreens = electron.screen.getAllDisplays();
+            allScreens.forEach(s => {s.bounds.maxX = s.bounds.x + s.bounds.width; s.bounds.maxY = s.bounds.y + s.bounds.height; });
+            const minX = allScreens.reduce((pv, cv) => pv < cv.bounds.x ? pv : cv.bounds.x, 0);
+            const minY = allScreens.reduce((pv, cv) => pv < cv.bounds.y ? pv : cv.bounds.y, 0);
+            const maxWidth = allScreens.reduce((pv, cv) => pv <= cv.bounds.maxX ? cv.bounds.maxX : pv, 0) + Math.abs(minX);
+            const maxHeight = allScreens.reduce((pv, cv) => pv <= cv.bounds.maxY ? cv.bounds.maxY : pv, 0) + Math.abs(minY);
 
             this.cropWindow = new BrowserWindow({
-                width: width,
-                height: height,
-                x: left,
-                y: top,
+                width: maxWidth,
+                height: maxHeight,
+                x: minX,
+                y: minY,
                 show: false,
                 frame: false,
-                thickFrame: false,
                 alwaysOnTop: true,
                 skipTaskbar: true,
-                autoHideMenuBar: true
+                autoHideMenuBar: true,
+                enableLargerThanScreen: true
             });
+            this.cropWindow.setSize(maxWidth, maxHeight);
 
             this.cropWindow.on('closed', () => {
                 this.cropWindow = null;
