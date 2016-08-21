@@ -5,6 +5,7 @@ const execFile = require('child_process').execFile;
 
 const request = require('request');
 const async = require('async');
+const trash = require('trash');
 
 const electron = require('electron');
 const app = electron.app;
@@ -380,7 +381,7 @@ class Pussh {
     }
 
     moveToTemp(file) {
-        const tmpFile = path.join(app.getPath('temp'), path.basename(file));
+        const tmpFile = path.join(app.getPath('temp'), Date.now(), path.basename(file));
         fs.writeFileSync(tmpFile, fs.readFileSync(file));
         return tmpFile;
     }
@@ -388,25 +389,7 @@ class Pussh {
     trash(file) {
         if (this.settings.get('sendToTrash') === false) return;
 
-        let trashFolder;
-
-        switch(this.platform) {
-            case 'win32':
-                // this does not work
-                trashFolder = path.join(process.env['SystemRoot'], '$Recycle.bin', process.env['SID']);
-                break;
-            case 'darwin':
-                trashFolder = path.join(process.env['HOME'], '.Trash');
-                break;
-            case 'linux':
-                trashFolder = path.join(process.env['HOME'], '.local', 'share', 'Trash');
-                break;
-            default:
-                return;
-        }
-
-        // We could just delete the file, but what if the user wants it back
-        fs.rename(file, path.join(trashFolder, path.basename(file)));
+        trash([file]);
     }
 
     deleteFile(file) {

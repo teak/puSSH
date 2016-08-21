@@ -13,8 +13,8 @@
     "jimp": "^0.2.27",
     "keytar": "^3.0.2",
     "request": "^2.74.0",
-    "slash": "^1.0.0",
-    "ssh2": "^0.5.0"
+    "ssh2": "^0.5.0",
+    "trash": "^3.4.1"
   },
   "devDependencies": {
     "electron-rebuild": "^1.2.0"
