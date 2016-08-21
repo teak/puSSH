@@ -381,7 +381,7 @@ class Pussh {
     }
 
     moveToTemp(file) {
-        const tmpFile = path.join(app.getPath('temp'), Date.now(), path.basename(file));
+        const tmpFile = path.join(app.getPath('temp'), Date.now() + path.basename(file));
         fs.writeFileSync(tmpFile, fs.readFileSync(file));
         return tmpFile;
     }
