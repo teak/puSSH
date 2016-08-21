@@ -322,7 +322,8 @@ class Pussh {
                 alwaysOnTop: true,
                 skipTaskbar: true,
                 autoHideMenuBar: true,
-                enableLargerThanScreen: true
+                enableLargerThanScreen: true,
+                thickFrame: false
             });
             this.cropWindow.setSize(maxWidth, maxHeight);
 
