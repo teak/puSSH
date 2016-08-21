@@ -13,6 +13,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "jimp": "^0.2.27",
     "keytar": "^3.0.2",
+    "lodash.debounce": "^4.0.8",
     "request": "^2.74.0",
     "ssh2": "^0.5.0",
     "trash": "^3.4.1"
