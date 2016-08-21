@@ -124,8 +124,8 @@ class Pussh {
             height: 600,
             minWidth: 900,
             minHeight: 580,
-            'skip-taskbar': true,
-            'auto-hide-menu-bar': true
+            skipTaskbar: true,
+            autoHideMenuBar: true
         });
         this.settingsWindow.setMenu(null);
         this.settingsWindow.loadURL(`file://${path.join(app.getAppPath(), 'settings-window.html')}`);
@@ -141,8 +141,8 @@ class Pussh {
                 height: 600,
                 minWidth: 900,
                 minHeight: 580,
-                'skip-taskbar': true,
-                'auto-hide-menu-bar': true
+                skipTaskbar: true,
+                autoHideMenuBar: true
             });
             this.editorWindow.on('closed', () => this.editorWindow = null);
             this.editorWindow.show
@@ -328,8 +328,8 @@ class Pussh {
                 frame: false,
                 thickFrame: false,
                 alwaysOnTop: true,
-                'skip-taskbar': true,
-                'auto-hide-menu-bar': true
+                skipTaskbar: true,
+                autoHideMenuBar: true
             });
 
             this.cropWindow.on('closed', () => {
