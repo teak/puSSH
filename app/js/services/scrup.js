@@ -1,56 +1,45 @@
-var request = require('request');
-var fs = require('fs');
-var path = require('path');
-var util = require('util');
-var dialog = require('electron').dialog;
+const fs = require('fs');
+const path = require('path');
 
-var ServiceSettings = require('../service-settings');
+const request = require('request');
 
-function Service(main) {
-    this._settings = main.settings;
-    Service.super_.call(this);
+const ServiceSettings = require('../service-settings');
 
-    this._name = "scrup";
-    this.name = "Scrup";
-    this.description = "Scrup compatible uploader";
+class Service extends ServiceSettings {
+    constructor(pusshSettings) {
+        super(pusshSettings, 'scrup');
 
-    this.settings = [
-        {
-            name: 'Upload URL',
-            key: 'upload_url',
-            type: 'text',
-            password: false,
-            default: '',
-            helpText: 'The URL to recieve the POST request'
-        }
-    ];
+        this.name = 'Scrup';
+        this.description = 'Scrup compatible uploader';
 
-    this.loadSettings();
-}
+        this.settings = [
+            {
+                name: 'Upload URL',
+                key: 'upload_url',
+                type: 'text',
+                password: false,
+                default: '',
+                helpText: 'The URL to recieve the POST request'
+            }
+        ];
 
-util.inherits(Service, ServiceSettings);
+        this.loadSettings();
+    }
 
-Service.prototype.upload = function(filepath, callback) {
-    var _self = this;
+    upload(filePath, callback) {
+        if (!this.getSetting('upload_url')) return callback(new Error('No url configured for upload'));
 
-    if (!_self.getSetting('upload_url')) return dialog.showMessageBox({type: 'error', buttons: ['Okay'], message: 'An error has occured :(', detail: 'No url configured for upload'});
+        request.post({
+            url: this.getSetting('upload_url'),
+            body: fs.readFileSync(filePath)
+        }, function(err, res, body) {
+            if (err || !res || res.statusCode !== 200 || !body) {
+                return callback(new Error(`HTTP error occurred: ${err ? err.message : `${response && response.statusCode} server response code`}`));
+            }
 
-    request.post({
-        url: _self.getSetting('upload_url'),
-        body: fs.readFileSync(filepath)
-    }, function(err, response, body) {
-        if (err) {
-            dialog.showMessageBox({type: 'error', buttons: ['Okay'], message: 'An error has occured :(', detail: 'error: ' + err});
-            return;
-        }
-
-        if (response.statusCode < 200 || response.statusCode >= 300) {
-            dialog.showMessageBox({type: 'error', buttons: ['Okay'], message: 'An error has occured :(', detail: 'error: server returned status code ' + response.statusCode});
-            return;
-        }
-
-        callback(body);
-    });
+            callback(null, body);
+        });
+    }
 }
 
 module.exports = Service;

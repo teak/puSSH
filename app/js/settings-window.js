@@ -1,11 +1,12 @@
 'use strict';
 
-var app = angular.module('settingsWindow', []);
+const app = angular.module('settingsWindow', []);
+
+const remote = require('electron').remote;
 
 app.run(function($rootScope) {
     $rootScope.Platform = require('os').platform();
-    var remote = require('remote');
-    $rootScope.Electron = remote.require('app');
+    $rootScope.Electron = remote.app;
     $rootScope.AppName = $rootScope.Electron.getName();
     $rootScope.Version = $rootScope.Electron.getVersion();
     $rootScope.Window = remote.getCurrentWindow();
@@ -15,7 +16,7 @@ app.run(function($rootScope) {
 });
 
 app.controller('settings', function($scope, $rootScope) {
-    var Pussh = $rootScope.Pussh;
+    const Pussh = $rootScope.Pussh;
 
     $scope.services = Pussh.services.list();
     $scope.settings = Pussh.settings.get();
@@ -54,19 +55,18 @@ app.controller('settings', function($scope, $rootScope) {
     $scope.save = debounce(function() {
         $scope.selectedService.saveSettings();
         Pussh.settings.save();
-        console.log('asdf');
     }, 1000);
 });
 
 function debounce(func, wait, immediate) {
-    var timeout;
+    let timeout;
     return function() {
-        var context = this, args = arguments;
-        var later = function() {
+        const context = this, args = arguments;
+        const later = () => {
             timeout = null;
             if (!immediate) func.apply(context, args);
         };
-        var callNow = immediate && !timeout;
+        const callNow = immediate && !timeout;
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
         if (callNow) func.apply(context, args);

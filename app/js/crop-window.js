@@ -1,5 +1,5 @@
-var remote = require('remote');
-var app = remote.require('app');
+var remote = require('electron').remote;
+var app = remote.app;
 var os = require('os');
 var path = require('path');
 var Jimp = require('jimp');

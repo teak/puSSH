@@ -1,44 +1,40 @@
-var app = require('app');
-var fs = require('fs');
-var path = require('path');
+const app = require('electron').app;
+const fs = require('fs');
+const path = require('path');
 
-function Services(main) {
-    this.settings = main.settings;
-    this.services = {};
+const servicesPath = path.join(app.getAppPath(), 'js', 'services');
 
-    this.load();
-}
+class Services {
+    constructor(settings) {
+        this.settings = settings;
+        this.services = {};
 
-Services.prototype.load = function() {
-    var _self = this;
-    fs.readdirSync(path.join(app.getAppPath(), 'js', 'services')).forEach(function(file) {
-        if(!/\.js$/.test(file)) return;
+        this.load();
+    }
 
-        var module = require(path.join(app.getAppPath(), 'js', 'services', file));
+    load() {
+        fs.readdirSync(servicesPath).forEach(file => {
+            if(!/\.js$/.test(file)) return;
 
-        var initModule = new module(_self);
+            const module = require(path.join(servicesPath, file));
 
-        _self.services[initModule._name] = initModule;
-    });
-}
+            const initModule = new module(this.settings);
 
-Services.prototype.list = function() {
-    var list = [];
+            this.services[initModule._name] = initModule;
+        });
+    }
 
-    var _self = this;
-    Object.keys(this.services).forEach(function(service) {
-        list.push(_self.services[service]);
-    });
+    list() {
+        return Object.keys(this.services).map(name => this.services[name]);
+    }
 
-    return list;
-}
+    get(name) {
+        return this.services[name];
+    }
 
-Services.prototype.get = function(name) {
-    return this.services[name];
-}
-
-Services.prototype.set = function(name, data) {
-    return this.services[name].save(data);
+    set(name, data) {
+        return this.services[name].save(data);
+    }
 }
 
 module.exports = Services;

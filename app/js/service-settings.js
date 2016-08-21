@@ -1,44 +1,46 @@
-function ServiceSettings() {
-    this.saveSettings = function() {
-        var _self = this;
+class ServiceSettings {
+    constructor(pusshSettings, name) {
+        this._pusshSettings = pusshSettings;
+        this._name = name;
+    }
 
-        this.settings.forEach(function(option) {
-            if(option.password) {
-                _self.setPassword(option.key, option.value);
+    saveSettings() {
+        this.settings.forEach(option => {
+            if (option.password) {
+                this.setPassword(option.key, option.value);
             } else {
-                _self.setSetting(option.key, option.value);
+                this.setSetting(option.key, option.value);
             }
         });
-    };
+    }
 
-    this.getSettings = function() {
+    getSettings() {
         return this.settings;
     }
 
-    this.getSetting = function(key) {
-        return this._settings.get(this._name+'_'+key);
+    getSetting(key) {
+        return this._pusshSettings.get(`${this._name}_${key}`);
     }
 
-    this.setSetting = function(key, value) {
-        return this._settings.set(this._name+'_'+key, value);
+    setSetting(key, value) {
+        return this._pusshSettings.set(`${this._name}_${key}`, value);
     }
 
-    this.getPassword = function(key) {
-        return this._settings.getPassword(this._name+'_'+key);
+    getPassword(key) {
+        return this._pusshSettings.getPassword(`${this._name}_${key}`);
     }
 
-    this.setPassword = function(key, password) {
-        return this._settings.setPassword(this._name+'_'+key, password);
+    setPassword(key, password) {
+        return this._pusshSettings.setPassword(`${this._name}_${key}`, password);
     }
 
     // Loads settings at service initialization
-    this.loadSettings = function() {
-        var _self = this;
-        this.settings.forEach(function(option) {
+    loadSettings() {
+        this.settings.forEach(option => {
             if(option.password) {
-                option.value = _self.getPassword(option.key);
+                option.value = this.getPassword(option.key);
             } else {
-                option.value = _self.getSetting(option.key) || option.default;
+                option.value = this.getSetting(option.key) || option.default;
             }
         });
     }

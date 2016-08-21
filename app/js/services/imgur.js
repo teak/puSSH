@@ -1,57 +1,45 @@
-var fs = require('fs');
-var path = require('path');
-var request = require('request');
-var ssh = require('ssh2');
-var util = require('util');
-var dialog = require('electron').dialog;
+const fs = require('fs');
+const path = require('path');
 
-var ServiceSettings = require('../service-settings');
+const request = require('request');
 
-function Service(main) {
-    this._settings = main.settings;
-    Service.super_.call(this);
+const ServiceSettings = require('../service-settings');
 
-    this._name = "imgur";
-    this.name = "Imgur";
-    this.description = "Share screenshots easily to Imgur.com";
+const ImgurClientID = 'b4723b6a37fa1bb';
 
-    this.settings = [];
-}
+class Service extends ServiceSettings {
+    constructor(pusshSettings) {
+        super(pusshSettings, 'imgur');
 
-util.inherits(Service, ServiceSettings);
+        this.name = 'Imgur';
+        this.description = 'Share screenshots easily to Imgur.com';
 
-Service.prototype.upload = function(file, callback) {
-    fs.readFile(file, function(err, data) {
-        var image = new Buffer(data).toString('base64');
-        
-        request.post({
-            url: 'https://api.imgur.com/3/upload',
-            headers: {
-                'Authorization': 'Client-ID b4723b6a37fa1bb'
-            },
-            form: {
-                type: 'base64',
-                image: image
-            }
-        }, function(err, res, body) {
-            try {
-                body = JSON.parse(body);
-            } catch(e) {
-                res.statusCode = 500;
-            }
+        this.settings = [];
+    }
 
-            if(!err && res.statusCode === 200) {
-                var link = body.data.link.replace(/^http/,'https');
-                callback(link);
-            } else {
-                if(res.statusCode !== 500 && body.data && typeof body.data.error === 'object') {
-                    dialog.showMessageBox({type: 'error', buttons: ['Okay'], message: 'An error has occured :(', detail: 'Imgur Error: '+body.data.error.message});
-                } else {
-                    dialog.showMessageBox({type: 'error', buttons: ['Okay'], message: 'An error has occured :(', detail: 'Error uploading to Imgur.'});
+    upload(filePath, callback) {
+        fs.readFile(filePath, (err, data) => {
+            if (err) return callback(err);
+
+            request.post({
+                url: 'https://api.imgur.com/3/upload',
+                headers: {
+                    'Authorization': `Client-ID ${ImgurClientID}`
+                },
+                form: {
+                    type: 'base64',
+                    image: new Buffer(data).toString('base64')
+                },
+                json: true
+            }, function(err, res, body) {
+                if (err || !res || res.statusCode !== 200 || !body) {
+                    return callback(new Error(`HTTP error occurred: ${err ? err.message : `${response && response.statusCode} server response code`}`));
                 }
-            }
+
+                callback(null, body.data.link.replace(/^http:/,'https:'));
+            });
         });
-    });
+    }
 }
 
 module.exports = Service;

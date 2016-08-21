@@ -1,28 +1,23 @@
-var remote = require('remote');
-var app = remote.require('app');
-var ipc = require('ipc');
-var shell = require('shell');
-var path = require('path');
-var fs = require('fs');
+const electron = require('electron');
+const app = electron.remote.app;
+const ipc = electron.ipcRenderer;
+const shell = electron.shell;
 
-var tink = new Audio(path.join(app.getAppPath(), 'aud', 'ts-tink.ogg'));
+const path = require('path');
 
-ipc.on('audio-notify', function(message) {
+const tink = new Audio(path.join(app.getAppPath(), 'aud', 'ts-tink.ogg'));
+
+ipc.on('audio-notify', () => {
     tink.load();
     tink.play();
 });
 
-
-Notification.requestPermission();
-
-ipc.on('unix-notify', function(message) {
-    var notify = new Notification('Pussh', {
-        body: message.body
+ipc.on('system-notify', (evt, body, url) => {
+    const notify = new Notification('Pussh', {
+        body: body,
+        silent: true
     });
 
-    if (message.url) {
-        notify.onclick = function() {
-            shell.openExternal(message.url);
-        };
-    } 
+    if (!url) return;
+    notify.onclick = () => shell.openExternal(url);
 });
