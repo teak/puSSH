@@ -308,7 +308,7 @@ class Pussh {
             }
 
             const output = stdout.split(',');
-            const scale = 0.9;
+            const scale = 1;
             let width = parseInt(output[2]);
             let height = parseInt(output[3]);
             let left = parseInt(output[0]);
@@ -326,6 +326,8 @@ class Pussh {
                 y: top,
                 show: false,
                 frame: false,
+                thickFrame: false,
+                alwaysOnTop: true,
                 'skip-taskbar': true,
                 'auto-hide-menu-bar': true
             });

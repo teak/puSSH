@@ -21,10 +21,11 @@ $(() => {
         cropWindow.show();
         cropWindow.focus();
 
+        $('#img').css({'top': parseInt(($(document).height() - $('#img').height()) / 2) + 'px'});
+        $('#img').css({'left': parseInt(($(document).width() - $('#img').width()) / 2) + 'px'});
+
         // flash white
         setTimeout(() => $('#white').fadeOut(200), 100);
-
-        $('#img').css({'left': parseInt(($(document).width() - $('#img').width()) / 2) + 'px'});
     });
 
     // close on esc key
