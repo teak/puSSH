@@ -23,8 +23,6 @@ const shell = electron.shell;
 const ipc = electron.ipcMain;
 const dialog = electron.dialog;
 
-const electronDebug = require('electron-debug')();
-
 const Settings = require('./settings');
 const Services = require('./services');
 
@@ -136,7 +134,6 @@ class Pussh {
     showEditorWindow() {
         if (!this.editorWindow) {
             this.editorWindow = new BrowserWindow({
-                //show: false,
                 width: 900,
                 height: 600,
                 minWidth: 900,
@@ -145,11 +142,9 @@ class Pussh {
                 autoHideMenuBar: true
             });
             this.editorWindow.on('closed', () => this.editorWindow = null);
-            this.editorWindow.show
-            //this.editorWindow.webContents.on('did-finish-load', () => this.editorWindow.show());
         }
 
-        this.editorWindow.loadURL(`file://${path.join(app.getAppPath(), `editor-window.html?lastURL=${encodeURIComponent(this.lastURLs[0])}`)}`);
+        this.editorWindow.loadURL(`file://${path.join(app.getAppPath(), `editor-window.html?last_url=${encodeURIComponent(this.lastURLs[0])}`)}`);
         this.editorWindow.focus();
     }
 
@@ -294,16 +289,16 @@ class Pussh {
     windowsCapture(crop=false) {
         if (this.platform !== 'win32') return;
 
-        // temp files
-        const fullImg = path.join(app.getPath('temp'), 'pussh_screen.png');
-        const cropImg = path.join(app.getPath('temp'), 'pussh_screen_crop.png');
+        // temp file
+        const date = new Date().toISOString().slice(0, 19).replace('T', ' ').replace(/:/g, '.');
+        const imagePath = path.join(app.getPath('temp'), `Screen Shot at ${date}.png`);
 
         // take the screenshot and start crop if needed
-        execFile(path.join(app.getAppPath(), 'bin', 'win', 'PusshCap.exe'), [fullImg], (error, stdout) => {
+        execFile(path.join(app.getAppPath(), 'bin', 'win', 'nircmd.exe'), ['savescreenshotfull', imagePath], (error, stdout) => {
             if (error) return;
 
-            if (!crop || !stdout) {
-                this.upload(this.moveToTemp(fullImg), fullImg);
+            if (!crop) {
+                this.upload(this.moveToTemp(imagePath), imagePath);
                 return;
             }
 
@@ -331,14 +326,12 @@ class Pussh {
             });
             this.cropWindow.setSize(maxWidth, maxHeight);
 
-            this.cropWindow.on('closed', () => {
+            this.cropWindow.on('close', () => {
                 this.cropWindow = null;
-                if (!fs.existsSync(cropImg)) return;
-                this.deleteFile(fullImg);
-                this.upload(this.moveToTemp(cropImg), cropImg);
+                this.upload(this.moveToTemp(imagePath), imagePath);
             });
 
-            this.cropWindow.loadURL(`file://${path.join(app.getAppPath(), 'crop-window.html')}`);
+            this.cropWindow.loadURL(`file://${path.join(app.getAppPath(), `crop-window.html?image_path=${encodeURIComponent(imagePath)}`)}`);
         });
     }
 

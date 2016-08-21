@@ -11,18 +11,20 @@ $(() => {
     cropWindow.on('blur', () => cropWindow.destroy());
 
     // temp files
-    const fullImg = path.join(app.getPath('temp'), 'pussh_screen.png');
-    const cropImg = path.join(app.getPath('temp'), 'pussh_screen_crop.png');
+    const imagePath = decodeURIComponent(window.location.href.split('?image_path=')[1]);
 
     // load the img preview
-    $('#img').attr('src', fullImg + '?c=' + new Date().getTime());
+    $('#img').attr('src', imagePath);
+    $('#img').css({
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+    });
     $('#img').load(() => {
-        //cropWindow.setFullScreen(true);
         cropWindow.show();
         cropWindow.focus();
-
-        $('#img').css({'top': parseInt(($(document).height() - $('#img').height()) / 2) + 'px'});
-        $('#img').css({'left': parseInt(($(document).width() - $('#img').width()) / 2) + 'px'});
 
         // flash white
         setTimeout(() => $('#white').fadeOut(200), 100);
@@ -129,12 +131,12 @@ $(() => {
             const height = dragSize.y * scale.y;
 
             // crop and save img. main script looks for the cropped file on window closed
-            Jimp.read(fullImg, (error, image) => {
+            Jimp.read(imagePath, (error, image) => {
                 if (error) return;
 
                 image.crop(left, top, width, height);
 
-                image.write(cropImg, () => cropWindow.destroy());
+                image.write(imagePath, () => cropWindow.close());
             });
         }
     });

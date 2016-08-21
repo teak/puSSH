@@ -11,7 +11,7 @@ const path = require('path');
 const Jimp = require('jimp');
 
 $(() => {
-    const imageURL = decodeURIComponent(window.location.href.split('?lastURL=')[1]);
+    const imageURL = decodeURIComponent(window.location.href.split('?last_url=')[1]);
     const platform = os.platform();
     let isVector = false;
 
