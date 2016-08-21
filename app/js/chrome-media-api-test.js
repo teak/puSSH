@@ -1,5 +1,5 @@
 // was in worker window
-ipc.on('chrome-cap', function(message) {
+ipc.on('chrome-cap', () => {
     navigator.webkitGetUserMedia({
         video: {
             mandatory: {
@@ -10,13 +10,12 @@ ipc.on('chrome-cap', function(message) {
             optional: []
         },
         audio: false
-    }, function(stream) {
-        
-        var video = document.createElement('video');
+    }, stream => {
+        const video = document.createElement('video');
 
-        video.addEventListener('loadedmetadata', function() {
+        video.addEventListener('loadedmetadata', () => {
             // setup path
-            var savePath = path.join(app.getPath('temp'), 'pussh_screen.png');
+            const savePath = path.join(app.getPath('temp'), 'pussh_screen.png');
             console.log(savePath);
 
             // use canvas to conver data to somthing usable
@@ -27,18 +26,18 @@ ipc.on('chrome-cap', function(message) {
             ctx.drawImage(this, 0, 0);
 
             //create data url
-            var imageDataURL = canvas.toDataURL();
+            const imageDataURL = canvas.toDataURL();
 
             // end meadia stream
             stream.getTracks()[0].stop();
 
             // remove 'data' from base64 url
-            var matches = imageDataURL.match(/^data:.+\/(.+);base64,(.*)$/);
-            var ext = matches[1];
-            var data = matches[2];
+            const matches = imageDataURL.match(/^data:.+\/(.+);base64,(.*)$/);
+            const ext = matches[1];
+            const data = matches[2];
 
             // save file
-            var buffer = new Buffer(data, 'base64');
+            const buffer = new Buffer(data, 'base64');
             fs.writeFileSync(savePath, buffer);
 
             ipc.sendSync('screen-saved', savePath);
@@ -47,7 +46,7 @@ ipc.on('chrome-cap', function(message) {
         video.src = URL.createObjectURL(stream);
         video.play();
 
-    }, function(err) {
+    }, err => {
         console.log("An error occured! " + err);
     });
 });

@@ -58,7 +58,7 @@ class Service extends ServiceSettings {
             formData: {
                 [this.getSetting('form_field')]: fs.createReadStream(filePath)
             }
-        }, function(err, response, body) {
+        }, (err, response, body) => {
             if (err || !response || response.statusCode >= 300) {
                 return callback(new Error(`HTTP error occurred: ${err ? err.message : `${response && response.statusCode} server response code`}`));
             }

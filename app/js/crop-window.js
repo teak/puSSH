@@ -1,48 +1,42 @@
-var remote = require('electron').remote;
-var app = remote.app;
-var os = require('os');
-var path = require('path');
-var Jimp = require('jimp');
+const remote = require('electron').remote;
+const app = remote.app;
+const cropWindow = remote.getCurrentWindow();
 
-$(function() {
-    var cropWindow = remote.getCurrentWindow();
-    cropWindow.on('blur', function() {
-        cropWindow.destroy();
-    });
+const os = require('os');
+const path = require('path');
 
-    // setup files
-    var fullImg = path.join(app.getPath('temp'), 'pussh_screen.png');
-    var cropImg = path.join(app.getPath('temp'), 'pussh_screen_crop.png');
+const Jimp = require('jimp');
+
+$(() => {
+    cropWindow.on('blur', () => cropWindow.destroy());
+
+    // temp files
+    const fullImg = path.join(app.getPath('temp'), 'pussh_screen.png');
+    const cropImg = path.join(app.getPath('temp'), 'pussh_screen_crop.png');
 
     // load the img preview
     $('#img').attr('src', fullImg + '?c=' + new Date().getTime());
-    $('#img').load(function() {
-        //cropWindow.setFullScreen(true); // fullscreen is buggy :/
+    $('#img').load(() => {
+        cropWindow.setFullScreen(true);
         cropWindow.show();
         cropWindow.focus();
 
         // flash white
-        setTimeout(function() {
-            $('#white').fadeOut(200);
-        }, 100);
+        setTimeout(() => $('#white').fadeOut(200), 100);
     });
 
     // close on esc key
-    $(document).keyup(function(e) {
-        if (e.keyCode == 27) {
-            cropWindow.destroy();
-        }
-    });
+    $(document).keyup(e => e.keyCode == 27 && cropWindow.destroy());
 
-    var dragging = false;
-    var mouseLoc = {x: 0, y: 0};
-    var dragStart = {x: 0, y: 0};
-    var dragSize = {x: 0, y: 0};
-    var dragEnd = {x: 0, y: 0};
-    var scale = {x: 1, y: 1};
+    let dragging = false;
+    let mouseLoc = {x: 0, y: 0};
+    let dragStart = {x: 0, y: 0};
+    let dragSize = {x: 0, y: 0};
+    let dragEnd = {x: 0, y: 0};
+    let scale = {x: 1, y: 1};
 
     // update mouse location
-    $(window).on('mousemove', function(e) {
+    $(window).on('mousemove', e => {
         mouseLoc.x = e.clientX;
         mouseLoc.y = e.clientY;
 
@@ -56,8 +50,8 @@ $(function() {
         scale.y = $('#img')[0].naturalHeight / $('#img').height();
 
         $('#cords').css({
-            "top": mouseLoc.y,
-            "left": mouseLoc.x
+            top: mouseLoc.y,
+            left: mouseLoc.x
         });
 
         if (dragging) {
@@ -72,8 +66,8 @@ $(function() {
             }
 
             $('#selection').css({
-                "height": dragSize.y,
-                "width": dragSize.x
+                height: dragSize.y,
+                width: dragSize.x
             });
 
             $('#cords').html(Math.round(dragSize.x * scale.x) + '<br />' + Math.round(dragSize.y * scale.y));
@@ -83,7 +77,7 @@ $(function() {
     });
 
     // start cropping
-    $(window).on('mousedown', function(e) {
+    $(window).on('mousedown', e => {
         dragging = true;
 
         dragStart.x = mouseLoc.x;
@@ -94,16 +88,16 @@ $(function() {
         dragEnd.y = 0;
 
         $('#selection').css({
-            "top": mouseLoc.y,
-            "left": mouseLoc.x,
-            "height": 0,
-            "width": 0
+            'top': mouseLoc.y,
+            'left': mouseLoc.x,
+            'height': 0,
+            'width': 0
         });
         $('#selection').show();
     });
 
     // stop cropping
-    $(window).on('mouseup', function(e) {
+    $(window).on('mouseup', e => {
         if (!dragging) return;
         dragging = false;
 
@@ -115,33 +109,30 @@ $(function() {
 
         $('#selection').hide();
         $('#selection').css({
-            "height": 0,
-            "width": 0
+            'height': 0,
+            'width': 0
         });
 
         // dont upload if the crop is 0
         if (dragSize.x <= 1 && dragSize.y <= 1) {
             cropWindow.destroy();
         } else {
-            var left = dragEnd.x > dragStart.x ? dragStart.x : dragEnd.x;
-            var top = dragEnd.y > dragStart.y ? dragStart.y : dragEnd.y;
+            let left = dragEnd.x > dragStart.x ? dragStart.x : dragEnd.x;
+            let top = dragEnd.y > dragStart.y ? dragStart.y : dragEnd.y;
             left = left * scale.x;
             top = top * scale.y;
 
-            var width = dragSize.x * scale.x;
-            var height = dragSize.y * scale.y;
+            const width = dragSize.x * scale.x;
+            const height = dragSize.y * scale.y;
 
             // crop and save img. main script looks for the cropped file on window closed
-            Jimp.read(fullImg, function(error, image) {
+            Jimp.read(fullImg, (error, image) => {
                 if (error) return;
 
                 image.crop(left, top, width, height);
 
-                image.write(cropImg, function() {
-                    cropWindow.destroy();
-                });
+                image.write(cropImg, () => cropWindow.destroy());
             });
         }
     });
-
 });

@@ -37,7 +37,7 @@ class Settings {
             return;
         }
 
-        fs.readFile(this.storagePath, 'utf8', function (error, data) {
+        fs.readFile(this.storagePath, 'utf8', (error, data) => {
             if (error) return;
 
             this.settings = JSON.parse(data);
