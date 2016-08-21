@@ -23,6 +23,8 @@ $(() => {
 
         // flash white
         setTimeout(() => $('#white').fadeOut(200), 100);
+
+        $('#img').css({'left': parseInt(($(document).width() - $('#img').width()) / 2) + 'px'});
     });
 
     // close on esc key
