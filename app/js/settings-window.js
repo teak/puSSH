@@ -20,9 +20,16 @@ app.run($rootScope => {
 app.controller('settings', ($scope, $rootScope) => {
     const Pussh = $rootScope.Pussh;
 
-    $scope.services = Pussh.services.list();
+    $scope.services = Pussh.services.list().map(s => {
+        return {
+            name: s.name,
+            _name: s._name,
+            description: s.description,
+            settings: s.settings
+        }
+    });
     $scope.settings = Pussh.settings.get();
-    $scope.selectedService = Pussh.services.get($scope.settings.selectedService);
+    $scope.selectedService = Pussh.services.get($scope.settings.selectedService) || Pussh.services.list()[0];
     $scope.serviceSettings = $scope.selectedService.getSettings();
     $scope.autoLaunchSetting = false;
 
@@ -46,7 +53,7 @@ app.controller('settings', ($scope, $rootScope) => {
     $scope.$watch('serviceSettings', () => $scope.save(), true);
 
     $scope.save = debounce(() => {
-        $scope.selectedService.saveSettings();
+        Pussh.services.get($scope.selectedService._name).saveSettings();
         Pussh.settings.save();
     }, 1000, {
         leading: true,
