@@ -26,6 +26,8 @@ const dialog = electron.dialog;
 const Settings = require('./settings');
 const Services = require('./services');
 
+const electronDebug = require('electron-debug')();
+
 const getTrayImage = (state=null, template=false) => {
     if (!state && os.platform() === 'win32') state = 'alt';
     if (template) {
