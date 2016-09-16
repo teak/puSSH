@@ -6,6 +6,13 @@ const remote = require('electron').remote;
 
 const debounce = require('lodash.debounce');
 
+// copy/paste menu & hotkeys
+const inputMenu = require('electron-input-menu');
+const contextMenu = require('electron-contextmenu-middleware');
+contextMenu.use(inputMenu);
+contextMenu.activate();
+inputMenu.registerShortcuts();
+
 app.run($rootScope => {
     $rootScope.Platform = require('os').platform();
     $rootScope.Electron = remote.app;
