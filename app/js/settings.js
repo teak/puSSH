@@ -20,8 +20,7 @@ class Settings {
         this.keychain = keytar;
         this.autoLaunch = new AutoLaunch({
             name: this.name,
-            path: app.getPath('exe'),
-            isHidden: true
+            path: app.getPath('exe').replace(new RegExp(`/Contents/MacOS/${this.name}$`, 'i'), '')
         });
 
         this.load(true);
