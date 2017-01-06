@@ -63,7 +63,7 @@ class Service extends ServiceSettings {
                 return callback(new Error(`HTTP error occurred: ${err ? err.message : `${response && response.statusCode} server response code`}`));
             }
 
-            const fileName = this.getSetting('append_extension') ? path.basename(filepath) : path.basename(filepath).split('.')[0];
+            const fileName = this.getSetting('append_extension') ? path.basename(filePath) : path.basename(filePath).split('.')[0];
             callback(null, this.getSetting('url') + encodeURIComponent(fileName));
         });
     }
