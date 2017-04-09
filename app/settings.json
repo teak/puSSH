@@ -9,6 +9,7 @@
 	"randomizeFilenamesLength": 12,
 	"openBrowser": false,
 	"enableNotifications": true,
+	"richNotifications": true,
 	"audioNotifications": true,
 	"lastVersionLaunched": "0"
 }

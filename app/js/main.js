@@ -9,6 +9,7 @@ const execFile = require('child_process').execFile;
 const request = require('request');
 const async = require('async');
 const trash = require('trash');
+const numeral = require('numeral');
 
 const electron = require('electron');
 const app = electron.app;
@@ -51,7 +52,16 @@ class Pussh {
         this.cropWindow = null;
 
         // open hidden window to provide access to dom only apis
-        this.workerWindow = new BrowserWindow({show: false});
+        this.workerWindow = new BrowserWindow({
+            show: false,
+            frame: false,
+            width: 300,
+            height: 140,
+            alwaysOnTop: true,
+            skipTaskbar: true,
+            autoHideMenuBar: true,
+            resizable: false
+        });
         this.workerWindow.loadURL(`file://${path.join(app.getAppPath(), 'worker-window.html')}`);
 
         // worker window needs to be loaded first
@@ -168,10 +178,15 @@ class Pussh {
         const menu = new Menu();
 
         if (this.lastURLs.length) {
-            this.lastURLs.forEach(url => {
+            this.lastURLs.forEach((url, i) => {
+                let label = numeral(i + 1).format('0o') + ' ' + url;
                 menu.append(new MenuItem({
-                    label: url,
-                    click: () => this.copyToClipboard(url) && this.openInBrowser(url)
+                    label: label,
+                    click: () => {
+                        this.copyToClipboard(url);
+                        this.openInBrowser(url);
+                        this.notify('The screenshot URL has been copied to your clipboard.', url);
+                    }
                 }));
             });
 
@@ -180,7 +195,7 @@ class Pussh {
             }));
 
             // menu.append(new MenuItem({
-            //     label: 'Open Editor',
+            //     label: 'Edit Last Capture',
             //     click: () => this.showEditorWindow()
             // }));
 
@@ -364,6 +379,9 @@ class Pussh {
                 // save link to clipboard
                 this.copyToClipboard(url);
 
+                // notify the user
+                this.notify('The screenshot URL has been copied to your clipboard.', url);
+
                 // remove files
                 if (oldFile) this.trash(oldFile);
                 this.deleteFile(file);
@@ -451,7 +469,11 @@ class Pussh {
     notify(body, url) {
         if (!this.settings.get('enableNotifications')) return;
 
-        this.workerWindow.webContents.send('system-notify', body, url);
+        if (this.settings.get('richNotifications')) {
+            this.workerWindow.webContents.send('rich-notify', body, url);
+        } else {
+            this.workerWindow.webContents.send('system-notify', body, url);
+        }
     }
 
     openInBrowser(url) {
@@ -460,7 +482,6 @@ class Pussh {
 
     copyToClipboard(url) {
         clipboard.writeText(url);
-        this.notify('The screenshot URL has been copied to your clipboard.', url);
     }
 }
 

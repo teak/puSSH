@@ -13,10 +13,12 @@
     "electron-contextmenu-middleware": "^1.0.2",
     "electron-debug": "^1.0.1",
     "electron-input-menu": "^2.0.3",
+    "electron-positioner": "^3.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "jimp": "^0.2.27",
     "keytar": "^3.0.2",
     "lodash.debounce": "^4.0.8",
+    "numeral": "^2.0.6",
     "request": "^2.74.0",
     "ssh2": "^0.5.0",
     "trash": "^3.4.1"
