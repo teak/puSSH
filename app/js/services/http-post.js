@@ -41,7 +41,7 @@ class Service extends ServiceSettings {
                 name: 'Append File Extension',
                 key: 'append_extension',
                 type: 'checkbox',
-                helpText: 'Remove the image extension from the URL. E.g. example.org/image.png -> example.org/image'
+                helpText: 'Append the image extension on the URL. E.g. example.org/image -> example.org/image.png'
             }
         ];
 
