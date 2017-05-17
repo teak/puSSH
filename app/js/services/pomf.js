@@ -56,6 +56,9 @@ class Service extends ServiceSettings {
                     return callback(new Error('The Pomf API returned an invalid JSON response'));
                 }
             }
+            if (!body.success || !body.files || body.files.length === 0) {
+                return callback(new Error('The Pomf API returned an unexpected response'));
+            }
 
             let result_url = this.getSetting('result_url');
             if (result_url.length > 0 && result_url[result_url.length - 1] !== '/') {
