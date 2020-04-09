@@ -40,6 +40,9 @@ ipcRenderer.on('rich-notify', (evt, body, url) => {
         thisWindow.hide();
     };
 
+    document.getElementById('ocr-button').onclick = function() {
+        ipcRenderer.send('run-ocr');
+    };
 
     let displaySize = screen.getPrimaryDisplay().bounds;
     let windowSize = thisWindow.getSize();

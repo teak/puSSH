@@ -48,6 +48,7 @@ class Pussh {
 
         this.settingsWindow = null;
         this.editorWindow = null;
+        this.ocrWindow = null;
         this.workerWindow = null;
         this.cropWindow = null;
 
@@ -79,6 +80,12 @@ class Pussh {
             this.checkUpdates();
         });
 
+        // run ocr from rich notification
+        ipc.on('run-ocr', (event, arg) => {
+          this.showOCRWindow();
+        });
+
+
         // hide the dock icon on os x
         if (this.platform == 'darwin') app.dock.hide();
 
@@ -89,6 +96,7 @@ class Pussh {
         app.on('window-all-closed', () => {
             this.settingsWindow = null;
             this.editorWindow = null;
+            this.ocrWindow = null;
             this.workerWindow = null;
             this.cropWindow = null;
         });
@@ -177,6 +185,29 @@ class Pussh {
         this.editorWindow.focus();
     }
 
+    showOCRWindow() {
+        if (!this.ocrWindow) {
+            this.ocrWindow = new BrowserWindow({
+                webPreferences: {
+                    nodeIntegration: true
+                },
+                width: 1024,
+                height: 768,
+                minWidth: 480,
+                minHeight: 240,
+                alwaysOnTop: true,
+                skipTaskbar: true,
+                autoHideMenuBar: true,
+                fullscreenable: false
+            });
+            this.ocrWindow.on('closed', () => this.ocrWindow = null);
+        }
+
+        this.ocrWindow.setVisibleOnAllWorkspaces(true);
+        this.ocrWindow.loadURL(`file://${path.join(app.getAppPath(), `ocr-window.html?img_url=${encodeURIComponent(this.lastURLs[0])}`)}`);
+        this.ocrWindow.focus();
+    }
+
     setTrayState(state) {
         switch(state) {
             case 'off':
@@ -206,6 +237,15 @@ class Pussh {
                     }
                 }));
             });
+
+            menu.append(new MenuItem({
+                type: 'separator'
+            }));
+
+            menu.append(new MenuItem({
+                label: 'Run OCR Text Recognition on Last Capture',
+                click: () => this.showOCRWindow()
+            }));
 
             menu.append(new MenuItem({
                 type: 'separator'
