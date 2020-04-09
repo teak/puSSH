@@ -1,4 +1,4 @@
-Pussh
+puSSH
 =====
 
 The cross platform, multi-functional screenshot utility. http://pussh.me/

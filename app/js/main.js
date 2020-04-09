@@ -127,7 +127,7 @@ class Pussh {
             if (error || !response || response.statusCode !== 200 || !data.version) return;
 
             if (this.version !== data.version) {
-                const msg = 'Pussh has an update available. Click "OK" to open the Pussh download page.';
+                const msg = 'puSSH has an update available. Click "OK" to open the puSSH download page.';
                 if (!confirm(msg)) return;
                 this.openInBrowser('https://pussh.me/');
             }

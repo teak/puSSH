@@ -1,11 +1,11 @@
 {
-  "name": "Pussh",
+  "name": "puSSH",
   "description": "The cross platform, multi-functional screenshot utility that doesn't suck.",
   "author": {
-    "name": "Pussh",
+    "name": "puSSH",
     "url": "https://github.com/teak/Pussh"
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "js/main.js",
   "dependencies": {
     "async": "^3.2.0",

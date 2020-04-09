@@ -1,6 +1,6 @@
 {
-  "name": "Pussh",
-  "version": "0.0.2",
+  "name": "puSSH",
+  "version": "0.0.3",
   "scripts": {
     "preinstall": "cd app && npm install",
     "start": "electron ./app",
