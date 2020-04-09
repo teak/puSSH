@@ -49,7 +49,7 @@ class Settings {
             return;
         }
 
-        fs.writeFile(this.storagePath, JSON.stringify(this.settings, null, 2), 'utf-8');
+        fs.writeFile(this.storagePath, JSON.stringify(this.settings, null, 2), 'utf-8', () => {});
     }
 
     get(name) {

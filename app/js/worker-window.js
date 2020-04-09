@@ -1,24 +1,19 @@
-const electron = require('electron');
-const app = electron.remote.app;
-const ipc = electron.ipcRenderer;
-const shell = electron.shell;
+const { remote, ipcRenderer, shell } = require('electron');
+const { app, screen, clipboard } = remote;
 
 const path = require('path');
 
 const tink = new Audio(path.join(app.getAppPath(), 'aud', 'ts-tink.ogg'));
-const thisWindow = electron.remote.getCurrentWindow();
-
-const Positioner = require('electron-positioner');
-const positioner = new Positioner(thisWindow);
+const thisWindow = remote.getCurrentWindow();
 
 let richNotifyTimer = null;
 
-ipc.on('audio-notify', () => {
+ipcRenderer.on('audio-notify', () => {
     tink.load();
     tink.play();
 });
 
-ipc.on('system-notify', (evt, body, url) => {
+ipcRenderer.on('system-notify', (evt, body, url) => {
     const notify = new Notification('Pussh', {
         body: body,
         silent: true
@@ -28,26 +23,32 @@ ipc.on('system-notify', (evt, body, url) => {
     notify.onclick = () => shell.openExternal(url);
 });
 
-ipc.on('rich-notify', (evt, body, url) => {
+ipcRenderer.on('rich-notify', (evt, body, url) => {
     document.getElementById('back-img').style.backgroundImage = 'url(' + url + ')';
     document.getElementById('body-text').innerHTML = body;
+
+    // restart progress indicator
+    let progress = document.getElementById('progress');
+    let newProgress = progress.cloneNode(true);
+    progress.parentNode.replaceChild(newProgress, progress);
+
     document.getElementById('open-button').onclick = function() {
         shell.openExternal(url);
     };
+
     document.getElementById('close').onclick = function() {
         thisWindow.hide();
     };
 
 
-    let newPos = positioner.calculate('topRight');
-    newPos.x -= 20;
-    newPos.y += 20;
-    thisWindow.setPosition(newPos.x, newPos.y)
+    let displaySize = screen.getPrimaryDisplay().bounds;
+    let windowSize = thisWindow.getSize();
 
+    thisWindow.setPosition(displaySize.width - windowSize[0] - 20, 42);
     thisWindow.show();
 
     clearTimeout(richNotifyTimer);
     richNotifyTimer = setTimeout(() => {
         thisWindow.hide();
-    }, 10000);
+    }, 7000);
 });

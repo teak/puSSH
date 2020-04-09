@@ -27,7 +27,7 @@ const dialog = electron.dialog;
 const Settings = require('./settings');
 const Services = require('./services');
 
-const electronDebug = require('electron-debug')();
+//const electronDebug = require('electron-debug')();
 
 const getTrayImage = (state=null, template=false) => {
     if (!state && os.platform() === 'win32') state = 'alt';
@@ -53,6 +53,9 @@ class Pussh {
 
         // open hidden window to provide access to dom only apis
         this.workerWindow = new BrowserWindow({
+            webPreferences: {
+                nodeIntegration: true
+            },
             show: false,
             frame: false,
             width: 300,
@@ -62,6 +65,7 @@ class Pussh {
             autoHideMenuBar: true,
             resizable: false
         });
+        this.workerWindow.setVisibleOnAllWorkspaces(true);
         this.workerWindow.loadURL(`file://${path.join(app.getAppPath(), 'worker-window.html')}`);
 
         // worker window needs to be loaded first
@@ -113,7 +117,7 @@ class Pussh {
             json: true
         }, (error, response, body) => {
             if (error || !response || response.statusCode !== 200 || !data.version) return;
-            
+
             if (this.version !== data.version) {
                 const msg = 'Pussh has an update available. Click "OK" to open the Pussh download page.';
                 if (!confirm(msg)) return;
@@ -129,15 +133,22 @@ class Pussh {
         }
 
         this.settingsWindow = new BrowserWindow({
+            webPreferences: {
+                nodeIntegration: true
+            },
             show: false,
             width: 900,
             height: 600,
             minWidth: 900,
             minHeight: 580,
+            alwaysOnTop: true,
             skipTaskbar: true,
-            autoHideMenuBar: true
+            autoHideMenuBar: true,
+            fullscreenable: false
         });
+
         this.settingsWindow.setMenu(null);
+        this.settingsWindow.setVisibleOnAllWorkspaces(true);
         this.settingsWindow.loadURL(`file://${path.join(app.getAppPath(), 'settings-window.html')}`);
         this.settingsWindow.on('closed', () => this.settingsWindow = null);
         this.settingsWindow.webContents.on('did-finish-load', () => this.settingsWindow.show());
@@ -146,16 +157,22 @@ class Pussh {
     showEditorWindow() {
         if (!this.editorWindow) {
             this.editorWindow = new BrowserWindow({
+                webPreferences: {
+                    nodeIntegration: true
+                },
                 width: 900,
                 height: 600,
                 minWidth: 900,
                 minHeight: 580,
+                alwaysOnTop: true,
                 skipTaskbar: true,
-                autoHideMenuBar: true
+                autoHideMenuBar: true,
+                fullscreenable: false
             });
             this.editorWindow.on('closed', () => this.editorWindow = null);
         }
 
+        this.editorWindow.setVisibleOnAllWorkspaces(true);
         this.editorWindow.loadURL(`file://${path.join(app.getAppPath(), `editor-window.html?last_url=${encodeURIComponent(this.lastURLs[0])}`)}`);
         this.editorWindow.focus();
     }
@@ -330,6 +347,9 @@ class Pussh {
             const maxHeight = allScreens.reduce((pv, cv) => pv <= cv.bounds.maxY ? cv.bounds.maxY : pv, 0) + Math.abs(minY);
 
             this.cropWindow = new BrowserWindow({
+                webPreferences: {
+                    nodeIntegration: true
+                },
                 width: maxWidth,
                 height: maxHeight,
                 x: minX,

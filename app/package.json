@@ -8,25 +8,26 @@
   "version": "0.0.2",
   "main": "js/main.js",
   "dependencies": {
-    "async": "^2.0.1",
-    "auto-launch": "^3.0.0",
+    "async": "^3.2.0",
+    "auto-launch": "^5.0.5",
     "electron-contextmenu-middleware": "^1.0.2",
-    "electron-debug": "^1.0.1",
+    "electron-debug": "^3.0.1",
     "electron-input-menu": "^2.0.3",
-    "electron-positioner": "^3.0.0",
+    "electron-positioner": "^4.1.0",
     "electron-squirrel-startup": "^1.0.0",
-    "jimp": "^0.2.27",
-    "keytar": "^3.0.2",
+    "jimp": "^0.10.1",
+    "keytar": "^5.4.0",
     "lodash.debounce": "^4.0.8",
     "numeral": "^2.0.6",
-    "request": "^2.74.0",
-    "ssh2": "^0.5.0",
-    "trash": "^3.4.1"
+    "request": "^2.88.2",
+    "ssh2": "^0.8.9",
+    "tesseract.js": "^2.1.1",
+    "trash": "^6.1.1"
   },
   "devDependencies": {
-    "electron-rebuild": "^1.5.7"
+    "electron-rebuild": "^1.10.1"
   },
   "scripts": {
-    "postinstall": "electron-rebuild -v 1.6.2"
+    "postinstall": "electron-rebuild -v 8.2.1"
   }
 }
