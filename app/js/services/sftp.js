@@ -9,7 +9,7 @@ class Service extends ServiceSettings {
     constructor(pusshSettings) {
         super(pusshSettings, 'sftp');
 
-        this.name = 'SFTP';
+        this.name = 'SSH / SFTP';
         this.description = 'Upload screenshots to a server via SFTP';
 
         this.settings = [

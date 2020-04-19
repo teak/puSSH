@@ -152,7 +152,9 @@ class Pussh {
             alwaysOnTop: true,
             skipTaskbar: true,
             autoHideMenuBar: true,
-            fullscreenable: false
+            fullscreenable: false,
+            resizable: false,
+            maximizable: false
         });
 
         this.settingsWindow.setMenu(null);

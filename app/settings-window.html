@@ -26,35 +26,38 @@
       <li class="active"><a href="#about" role="tab" data-toggle="tab">About</a></li>
       <li><a href="#general" role="tab" data-toggle="tab">General</a></li>
       <li><a href="#uploads" role="tab" data-toggle="tab">Uploads</a></li>
-      <li><a href="#service" role="tab" data-toggle="tab">{{selectedService.name}}</a></li>
+      <li><a href="#service" role="tab" data-toggle="tab" class="service">{{selectedService.name}}</a></li>
     </ul>
     <div class="tab-content">
 
       <!-- about -->
       <div class="tab-pane active" id="about">
-        <h4>Welcome</h4>
-
-        <p>To upload a cropped portion of your screen use the keyboard shortcut: </p>
-        <p ng-switch="Platform">
-          <kbd ng-switch-when="darwin">command + shift + 4</kbd>
-          <kbd ng-switch-when="win32">alt + shift + 4</kbd>
-        </p>
-        <br />
-
-        <p>To upload your entire screen use the shortcut: </p>
-        <p ng-switch="Platform">
-          <kbd ng-switch-when="darwin">command + shift + 3</kbd>
-          <kbd ng-switch-when="win32">alt + shift + 3</kbd>
-        </p>
-        <br />
-
-        <h4>Uploads</h4>
-        <p>
-          puSSH requires an upload service to function. Choose a service in the uploads tab, and configure it in the service tab. Imgur is the default upload service, and requires no setup.
-        </p>
-        <br />
-
         <div class="container-fluid">
+          <div class="row">
+            <div class="col-xs-12">
+              <h4>Welcome</h4>
+
+              <p>To upload a cropped portion of your screen use the keyboard shortcut: </p>
+              <p ng-switch="Platform">
+                <kbd ng-switch-when="darwin">command + shift + 4</kbd>
+                <kbd ng-switch-when="win32">alt + shift + 4</kbd>
+              </p>
+              <br />
+
+              <p>To upload your entire screen use the shortcut: </p>
+              <p ng-switch="Platform">
+                <kbd ng-switch-when="darwin">command + shift + 3</kbd>
+                <kbd ng-switch-when="win32">alt + shift + 3</kbd>
+              </p>
+              <br />
+
+              <h4>Uploads</h4>
+              <p>
+                puSSH requires an upload service to function. Choose a service in the uploads tab, and configure it in the service tab. Imgur is the default upload service, and requires no setup.
+              </p>
+              <br />
+            </div>
+          </div>
           <div class="row">
             <div class="col-xs-6">
               <h4>New In This Version</h4>
@@ -226,7 +229,13 @@
               <p class="help-block" ng-bind="setting.helpText"></p>
             </div>
           </div>
-          <p ng-show="!serviceSettings.length">No settings configurable</p>
+          <div class="container-fluid" ng-show="!serviceSettings.length">
+            <div class="row">
+              <div class="col-xs-12">
+                <p>No configurable settings.</p>
+              </div>
+            </div>
+          </div>
         </form>
       </div>
     </div>
