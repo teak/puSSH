@@ -8,7 +8,7 @@
     "dist": "build"
   },
   "devDependencies": {
-    "electron": "^8.2.1",
+    "electron": "^8.2.4",
     "electron-builder": "^22.4.1"
   },
   "build": {
