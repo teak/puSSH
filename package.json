@@ -3,9 +3,10 @@
   "version": "0.0.3",
   "scripts": {
     "preinstall": "cd app && npm install",
+    "postinstall": "electron-builder install-app-deps && cd app && npm run postinstall",
     "start": "electron ./app",
-    "pack": "build --dir",
-    "dist": "build"
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "devDependencies": {
     "electron": "^8.5.2",
@@ -13,9 +14,13 @@
   },
   "build": {
     "appId": "com.nightdev.pussh",
-    "category": "public.app-category.productivity",
+    "productName": "puSSH",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "./build/icon.icns"
+    },
     "win": {
-      "iconUrl": "https://github.com/teak/Pussh/tree/electron-dev/build/icon.ico?raw=true"
+      "icon": "./build/icon.ico"
     }
   }
 }
