@@ -20,7 +20,7 @@
     "lodash.debounce": "^4.0.8",
     "numeral": "^2.0.6",
     "request": "^2.88.2",
-    "ssh2": "^0.8.9",
+    "ssh2": "^1.4.0",
     "tesseract.js": "^2.1.1",
     "trash": "^6.1.1"
   },
