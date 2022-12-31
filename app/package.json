@@ -19,8 +19,7 @@
     "numeral": "^2.0.6",
     "request": "^2.88.2",
     "ssh2": "^1.11.0",
-    "tesseract.js": "^4.0.2",
-    "trash": "^8.1.0"
+    "tesseract.js": "^4.0.2"
   },
   "devDependencies": {
     "@electron/rebuild": "^3.2.10"

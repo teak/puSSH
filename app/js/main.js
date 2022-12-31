@@ -29,11 +29,6 @@ const dialog = electron.dialog;
 const Settings = require('./settings');
 const Services = require('./services');
 
-let trash;
-import('trash').then(({default: trashLib}) => {
-    trash = trashLib;
-});
-
 //const electronDebug = require('electron-debug')();
 
 const getTrayImage = (state=null, template=false) => {
@@ -511,7 +506,7 @@ class Pussh {
     trash(file) {
         if (this.settings.get('sendToTrash') === false) return;
 
-        trash([file]);
+        shell.trashItem(file);
     }
 
     deleteFile(file) {
