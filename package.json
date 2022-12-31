@@ -6,9 +6,11 @@
     "postinstall": "electron-builder install-app-deps && cd app && npm run postinstall",
     "start": "electron ./app",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist:mac": "electron-builder --mac --x64 --arm64",
+    "dist:win64": "electron-builder --win --x64"
   },
   "devDependencies": {
+    "@electron/rebuild": "^3.2.10",
     "electron": "^22.0.0",
     "electron-builder": "^23.6.0"
   },
