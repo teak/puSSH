@@ -143,9 +143,9 @@ class Pussh {
             timeout: 10000,
             json: true
         }, (error, response, body) => {
-            if (error || !response || response.statusCode !== 200 || !data.version) return;
+            if (error || !response || response.statusCode !== 200 || !body.version) return;
 
-            if (this.version !== data.version) {
+            if (this.version !== body.version) {
                 const msg = 'puSSH has an update available. Click "OK" to open the puSSH download page.';
                 if (!confirm(msg)) return;
                 this.openInBrowser('https://pussh.me/');
