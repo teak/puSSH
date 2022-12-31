@@ -9,8 +9,8 @@
     "dist": "electron-builder"
   },
   "devDependencies": {
-    "electron": "^9.4.0",
-    "electron-builder": "^22.4.1"
+    "electron": "^22.0.0",
+    "electron-builder": "^23.6.0"
   },
   "build": {
     "appId": "com.nightdev.pussh",
