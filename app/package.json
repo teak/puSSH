@@ -15,7 +15,7 @@
     "electron-input-menu": "^2.0.3",
     "electron-positioner": "^4.1.0",
     "electron-squirrel-startup": "^1.0.0",
-    "jimp": "^0.10.1",
+    "jimp": "^0.16.2",
     "keytar": "^5.4.0",
     "lodash.debounce": "^4.0.8",
     "numeral": "^2.0.6",
