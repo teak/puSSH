@@ -5,8 +5,8 @@ The cross platform, multi-functional screenshot utility. http://pussh.me/
 
 Deps:
 
-* node@6.4.0
-* npm@3.10.6
+* node@16
+* npm@8
 
 Local Dev Windows Only:
 

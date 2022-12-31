@@ -1,4 +1,4 @@
-const remote = require('electron').remote;
+const remote = require('@electron/remote');
 const app = remote.app;
 const cropWindow = remote.getCurrentWindow();
 

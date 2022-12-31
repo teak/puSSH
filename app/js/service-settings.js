@@ -35,14 +35,14 @@ class ServiceSettings {
     }
 
     // Loads settings at service initialization
-    loadSettings() {
-        this.settings.forEach(option => {
+    async loadSettings() {
+        for await (const option of this.settings) {
             if(option.password) {
-                option.value = this.getPassword(option.key);
+                option.value = await this.getPassword(option.key);
             } else {
                 option.value = this.getSetting(option.key) || option.default;
             }
-        });
+        }
     }
 }
 

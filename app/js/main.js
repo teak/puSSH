@@ -1,6 +1,9 @@
 // windows start menu add/delete /w squirrel install/uninstall
 if(require('electron-squirrel-startup')) return;
 
+const electronRemotePolyfill = require('@electron/remote/main');
+electronRemotePolyfill.initialize()
+
 const os = require('os');
 const path = require('path');
 const fs = require('fs');
@@ -8,7 +11,6 @@ const execFile = require('child_process').execFile;
 
 const request = require('request');
 const async = require('async');
-const trash = require('trash');
 const numeral = require('numeral');
 
 const electron = require('electron');
@@ -27,6 +29,11 @@ const dialog = electron.dialog;
 const Settings = require('./settings');
 const Services = require('./services');
 
+let trash;
+import('trash').then(({default: trashLib}) => {
+    trash = trashLib;
+});
+
 //const electronDebug = require('electron-debug')();
 
 const getTrayImage = (state=null, template=false) => {
@@ -37,6 +44,19 @@ const getTrayImage = (state=null, template=false) => {
         return trayImg;
     }
     return path.join(app.getAppPath(), 'img', `menu-${state ? `${state}-` : ''}icon@2x.png`);
+}
+
+function registerCopyPasteMenu(webContents) {
+    webContents.on('context-menu', (_, props) => {
+        const menu = new Menu();
+        if (props.isEditable) {
+            menu.append(new MenuItem({ label: 'Cut', role: 'cut' }));
+            menu.append(new MenuItem({ label: 'Copy', role: 'copy' }));
+            menu.append(new MenuItem({ label: 'Paste', role: 'paste' }));
+        }
+
+        menu.popup();
+    });
 }
 
 class Pussh {
@@ -55,6 +75,7 @@ class Pussh {
         // open hidden window to provide access to dom only apis
         this.workerWindow = new BrowserWindow({
             webPreferences: {
+                contextIsolation: false,
                 nodeIntegration: true
             },
             show: false,
@@ -66,6 +87,9 @@ class Pussh {
             autoHideMenuBar: true,
             resizable: false
         });
+        electronRemotePolyfill.enable(this.workerWindow.webContents);
+        registerCopyPasteMenu(this.workerWindow.webContents);
+
         this.workerWindow.setVisibleOnAllWorkspaces(true);
         this.workerWindow.loadURL(`file://${path.join(app.getAppPath(), 'worker-window.html')}`);
 
@@ -142,6 +166,7 @@ class Pussh {
 
         this.settingsWindow = new BrowserWindow({
             webPreferences: {
+                contextIsolation: false,
                 nodeIntegration: true
             },
             show: false,
@@ -156,6 +181,8 @@ class Pussh {
             resizable: false,
             maximizable: false
         });
+        electronRemotePolyfill.enable(this.settingsWindow.webContents);
+        registerCopyPasteMenu(this.settingsWindow.webContents);
 
         this.settingsWindow.setMenu(null);
         this.settingsWindow.setVisibleOnAllWorkspaces(true);
@@ -168,6 +195,7 @@ class Pussh {
         if (!this.editorWindow) {
             this.editorWindow = new BrowserWindow({
                 webPreferences: {
+                    contextIsolation: false,
                     nodeIntegration: true
                 },
                 width: 900,
@@ -179,6 +207,8 @@ class Pussh {
                 autoHideMenuBar: true,
                 fullscreenable: false
             });
+            electronRemotePolyfill.enable(this.editorWindow.webContents);
+            registerCopyPasteMenu(this.editorWindow.webContents);
             this.editorWindow.on('closed', () => this.editorWindow = null);
         }
 
@@ -191,7 +221,9 @@ class Pussh {
         if (!this.ocrWindow) {
             this.ocrWindow = new BrowserWindow({
                 webPreferences: {
-                    nodeIntegration: true
+                    contextIsolation: false,
+                    nodeIntegration: true,
+                    nodeIntegrationInWorker: true
                 },
                 width: 1024,
                 height: 768,
@@ -202,6 +234,8 @@ class Pussh {
                 autoHideMenuBar: true,
                 fullscreenable: false
             });
+            electronRemotePolyfill.enable(this.ocrWindow.webContents);
+            registerCopyPasteMenu(this.ocrWindow.webContents);
             this.ocrWindow.on('closed', () => this.ocrWindow = null);
         }
 
@@ -390,6 +424,7 @@ class Pussh {
 
             this.cropWindow = new BrowserWindow({
                 webPreferences: {
+                    contextIsolation: false,
                     nodeIntegration: true
                 },
                 width: maxWidth,
@@ -404,6 +439,8 @@ class Pussh {
                 enableLargerThanScreen: true,
                 thickFrame: false
             });
+            electronRemotePolyfill.enable(this.cropWindow.webContents);
+            registerCopyPasteMenu(this.cropWindow.webContents);
             this.cropWindow.setSize(maxWidth, maxHeight);
 
             this.cropWindow.on('close', () => {

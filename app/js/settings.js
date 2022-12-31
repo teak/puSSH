@@ -67,10 +67,8 @@ class Settings {
     setPassword(service, password) {
         if (!password || password == '') {
             this.keychain.deletePassword('pussh', service);
-        } else if (this.keychain.getPassword('pussh', service)) {
-            this.keychain.replacePassword('pussh', service, password);
         } else {
-            this.keychain.addPassword('pussh', service, password);
+            this.keychain.setPassword('pussh', service, password);
         }
     }
 

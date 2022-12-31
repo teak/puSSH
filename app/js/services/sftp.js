@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ssh = require('ssh2');
+const {Client: ssh} = require('ssh2');
 
 const ServiceSettings = require('../service-settings');
 
@@ -80,38 +80,40 @@ class Service extends ServiceSettings {
         if (!this.getSetting('username')) return callback(new Error('No username configured for upload'));
         if (!this.getSetting('url')) return callback(new Error('No url configured for upload'));
 
-        const conn = new ssh();
-        conn.on('ready', () => {
-            conn.sftp((err, sftp) => {
-                if (err) {
-                    conn.end();
-                    return callback(new Error('Error connecting to server'));
-                }
-
-                const fileName = path.basename(filePath);
-
-                sftp.fastPut(filePath, path.join(this.getSetting('path'), fileName), err => {
+        Promise.all([this.getPassword('sftp_private_key'), this.getPassword('sftp_password')]).then(([privateKey, password]) => {
+            const conn = new ssh();
+            conn.on('ready', () => {
+                conn.sftp((err, sftp) => {
                     if (err) {
                         conn.end();
-                        return callback(new Error('Error uploading to server'));
+                        return callback(new Error('Error connecting to server'));
                     }
 
-                    conn.end();
-                    callback(null, this.getSetting('url') + encodeURIComponent(fileName));
+                    const fileName = path.basename(filePath);
+
+                    sftp.fastPut(filePath, path.join(this.getSetting('path'), fileName), err => {
+                        if (err) {
+                            conn.end();
+                            return callback(new Error('Error uploading to server'));
+                        }
+
+                        conn.end();
+                        callback(null, this.getSetting('url') + encodeURIComponent(fileName));
+                    });
                 });
+            })
+            .on('error', e => {
+                conn.end();
+                callback(e);
+            })
+            .connect({
+                host: this.getSetting('hostname'),
+                port: this.getSetting('port'),
+                username: this.getSetting('username'),
+                password: !privateKey ? password : undefined,
+                passphrase: privateKey ? password : undefined,
+                privateKey: privateKey || undefined
             });
-        })
-        .on('error', e => {
-            conn.end();
-            callback(e);
-        })
-        .connect({
-            host: this.getSetting('hostname'),
-            port: this.getSetting('port'),
-            username: this.getSetting('username'),
-            password: !this.getPassword('sftp_private_key') ? this.getPassword('sftp_password') : undefined,
-            passphrase: this.getPassword('sftp_private_key') ? this.getPassword('sftp_password') : undefined,
-            privateKey: this.getPassword('sftp_private_key') || undefined
         });
     }
 }
