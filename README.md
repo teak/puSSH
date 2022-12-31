@@ -24,7 +24,8 @@ npm start
 Dist:
 
 ```
-npm run dist
+npm run dist:mac
+npm run dist:win64
 ```
 
 That was easy.
