@@ -139,7 +139,7 @@ class Pussh {
         if (!this.settings.get('checkForUpdates')) return;
 
         request.get({
-            url: 'https://pussh.me/dl/pussh.json',
+            url: 'https://pussh.me/dl/version.json',
             timeout: 10000,
             json: true
         }, (error, response, body) => {
