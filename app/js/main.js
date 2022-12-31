@@ -146,9 +146,16 @@ class Pussh {
             if (error || !response || response.statusCode !== 200 || !body.version) return;
 
             if (this.version !== body.version) {
-                const msg = 'puSSH has an update available. Click "OK" to open the puSSH download page.';
-                if (!confirm(msg)) return;
-                this.openInBrowser('https://pussh.me/');
+                dialog.showMessageBox({
+                    type: 'question',
+                    buttons: ['Maybe later', 'OK'],
+                    title: 'Update available',
+                    message: 'puSSH has an update available. Click "OK" to open the puSSH download page.'
+                }).then(({response: buttonClicked}) => {
+                    if (buttonClicked === 1) {
+                        this.openInBrowser('https://pussh.me/');
+                    }
+                });
             }
         });
     }
