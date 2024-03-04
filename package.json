@@ -12,7 +12,7 @@
   "devDependencies": {
     "@electron/rebuild": "^3.2.10",
     "electron": "^22.3.25",
-    "electron-builder": "^23.6.0"
+    "electron-builder": "^24.13.3"
   },
   "build": {
     "appId": "com.nightdev.pussh",
