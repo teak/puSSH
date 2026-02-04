@@ -22,7 +22,7 @@
     "tesseract.js": "^4.0.2"
   },
   "devDependencies": {
-    "@electron/rebuild": "^3.2.10"
+    "@electron/rebuild": "^4.0.3"
   },
   "scripts": {
     "postinstall": "electron-rebuild -v 22.0.0"
