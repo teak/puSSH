@@ -10,9 +10,9 @@
     "dist:win64": "electron-builder --win --x64"
   },
   "devDependencies": {
-    "@electron/rebuild": "^3.2.10",
+    "@electron/rebuild": "^4.0.3",
     "electron": "^35.7.5",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^26.8.1"
   },
   "build": {
     "appId": "com.nightdev.pussh",
