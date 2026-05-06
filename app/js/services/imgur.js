@@ -1,8 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const request = require('request');
-
 const ServiceSettings = require('../service-settings');
 
 const ImgurClientID = 'b4723b6a37fa1bb';
@@ -18,26 +16,32 @@ class Service extends ServiceSettings {
     }
 
     upload(filePath, callback) {
-        fs.readFile(filePath, (err, data) => {
+        fs.readFile(filePath, async (err, data) => {
             if (err) return callback(err);
 
-            request.post({
-                url: 'https://api.imgur.com/3/upload',
-                headers: {
-                    'Authorization': `Client-ID ${ImgurClientID}`
-                },
-                form: {
+            try {
+                const body = new URLSearchParams({
                     type: 'base64',
-                    image: new Buffer(data).toString('base64')
-                },
-                json: true
-            }, (err, res, body) => {
-                if (err || !res || res.statusCode !== 200 || !body) {
-                    return callback(new Error(`HTTP error occurred: ${err ? err.message : `${response && response.statusCode} server response code`}`));
+                    image: data.toString('base64')
+                });
+                const res = await fetch('https://api.imgur.com/3/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Client-ID ${ImgurClientID}`
+                    },
+                    body
+                });
+                if (res.status !== 200) {
+                    return callback(new Error(`HTTP error occurred: ${res.status} server response code`));
                 }
-
-                callback(null, body.data.link.replace(/^http:/,'https:'));
-            });
+                const json = await res.json();
+                if (!json || !json.data || !json.data.link) {
+                    return callback(new Error('HTTP error occurred: empty response'));
+                }
+                callback(null, json.data.link.replace(/^http:/, 'https:'));
+            } catch (err) {
+                callback(new Error(`HTTP error occurred: ${err.message}`));
+            }
         });
     }
 }

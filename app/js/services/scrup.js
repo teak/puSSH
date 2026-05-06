@@ -1,8 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const request = require('request');
-
 const ServiceSettings = require('../service-settings');
 
 class Service extends ServiceSettings {
@@ -26,19 +24,23 @@ class Service extends ServiceSettings {
         this.loadSettings();
     }
 
-    upload(filePath, callback) {
+    async upload(filePath, callback) {
         if (!this.getSetting('upload_url')) return callback(new Error('No url configured for upload'));
 
-        request.post({
-            url: this.getSetting('upload_url'),
-            body: fs.readFileSync(filePath)
-        }, (err, res, body) => {
-            if (err || !res || res.statusCode !== 200 || !body) {
-                return callback(new Error(`HTTP error occurred: ${err ? err.message : `${response && response.statusCode} server response code`}`));
+        try {
+            const res = await fetch(this.getSetting('upload_url'), {
+                method: 'POST',
+                body: fs.readFileSync(filePath)
+            });
+            if (res.status !== 200) {
+                return callback(new Error(`HTTP error occurred: ${res.status} server response code`));
             }
-
+            const body = await res.text();
+            if (!body) return callback(new Error('HTTP error occurred: empty response'));
             callback(null, body);
-        });
+        } catch (err) {
+            callback(new Error(`HTTP error occurred: ${err.message}`));
+        }
     }
 }
 

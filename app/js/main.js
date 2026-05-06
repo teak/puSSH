@@ -9,7 +9,6 @@ const path = require('path');
 const fs = require('fs');
 const execFile = require('child_process').execFile;
 
-const request = require('request');
 const async = require('async');
 const numeral = require('numeral');
 
@@ -135,29 +134,32 @@ class Pussh {
         this.settings.save();
     }
 
-    checkUpdates() {
+    async checkUpdates() {
         if (!this.settings.get('checkForUpdates')) return;
 
-        request.get({
-            url: 'https://pussh.me/dl/version.json',
-            timeout: 10000,
-            json: true
-        }, (error, response, body) => {
-            if (error || !response || response.statusCode !== 200 || !body.version) return;
+        let body;
+        try {
+            const response = await fetch('https://pussh.me/dl/version.json', {
+                signal: AbortSignal.timeout(10000)
+            });
+            if (!response.ok) return;
+            body = await response.json();
+        } catch (error) {
+            return;
+        }
+        if (!body || !body.version) return;
 
-            if (this.version !== body.version) {
-                dialog.showMessageBox({
-                    type: 'question',
-                    buttons: ['Maybe later', 'OK'],
-                    title: 'Update available',
-                    message: 'puSSH has an update available. Click "OK" to open the puSSH download page.'
-                }).then(({response: buttonClicked}) => {
-                    if (buttonClicked === 1) {
-                        this.openInBrowser('https://pussh.me/');
-                    }
-                });
+        if (this.version !== body.version) {
+            const {response: buttonClicked} = await dialog.showMessageBox({
+                type: 'question',
+                buttons: ['Maybe later', 'OK'],
+                title: 'Update available',
+                message: 'puSSH has an update available. Click "OK" to open the puSSH download page.'
+            });
+            if (buttonClicked === 1) {
+                this.openInBrowser('https://pussh.me/');
             }
-        });
+        }
     }
 
     showSettingsWindow() {
